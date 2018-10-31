@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2041
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenta_Spel", "Tenta_Spel\Tenta_Spel\Tenta_Spel.csproj", "{1E00571C-DEB5-4FD8-B722-B1433406DE99}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Tenta_SpelContent", "Tenta_Spel\Tenta_SpelContent\Tenta_SpelContent.contentproj", "{9CAC5D41-D7F7-4179-89FA-B13CD5487272}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E00571C-DEB5-4FD8-B722-B1433406DE99}.Debug|x86.ActiveCfg = Debug|x86
+		{1E00571C-DEB5-4FD8-B722-B1433406DE99}.Debug|x86.Build.0 = Debug|x86
+		{1E00571C-DEB5-4FD8-B722-B1433406DE99}.Release|x86.ActiveCfg = Release|x86
+		{1E00571C-DEB5-4FD8-B722-B1433406DE99}.Release|x86.Build.0 = Release|x86
+		{9CAC5D41-D7F7-4179-89FA-B13CD5487272}.Debug|x86.ActiveCfg = Debug|x86
+		{9CAC5D41-D7F7-4179-89FA-B13CD5487272}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AE9ABCAE-09F4-4461-A85E-FB717F098E97}
+	EndGlobalSection
+EndGlobal

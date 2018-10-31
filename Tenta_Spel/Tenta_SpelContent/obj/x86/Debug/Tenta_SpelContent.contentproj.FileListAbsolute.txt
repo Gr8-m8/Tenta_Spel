@@ -1,0 +1,2 @@
+C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_SpelContent\obj\x86\Debug\Tenta_SpelContent.contentprojAssemblyReference.cache
+C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_SpelContent\obj\x86\Debug\Tenta_SpelContent.contentproj.CoreCompileInputs.cache

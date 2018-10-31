@@ -1,0 +1,3 @@
+Content\Sprites\Ship0.xnb
+Content\Sprites\ship1.xnb
+Content\Sprites\bullet.xnb
