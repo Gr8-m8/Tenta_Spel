@@ -40,6 +40,8 @@ namespace Tenta_Spel
                 Texture2D tempTexture = Texture2D.FromStream(GraphicsDevice, new System.IO.FileStream(tempPath, System.IO.FileMode.Open));
                 goc.textureList.Add(System.IO.Directory.GetFiles(imgPath)[i].Substring(tempPath.LastIndexOf('\\') +1).Split('.')[0], tempTexture);
             }
+
+            goc.ActivateBM();
             
             goc.AddGameObject(new GameObject("Ship1", new Vector2(100, 100)));
             foreach (GameObject go in goc.gos)
@@ -79,6 +81,7 @@ namespace Tenta_Spel
                 goc.player.Shoot(goc, 10, 1);
             }
 
+            goc.bm.Move(graphics);
 
             foreach (GameObject go in goc.gos)
             {
@@ -96,7 +99,12 @@ namespace Tenta_Spel
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(goc.textureList["BG1"], new Rectangle(0,0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.DarkGray);
+
+            spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos + new Vector2(0, 0), null, Color.White); //, 0f, 0, 5f, SpriteEffects.None, 0);
+            spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos + new Vector2(goc.bm.dim.X, 0), null, Color.White); //, 0f, 0, 5f, SpriteEffects.None, 0);
+            spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos + new Vector2(goc.bm.dim.X, goc.bm.dim.Y), null, Color.White); //, 0f, 0, 5f, SpriteEffects.None, 0);
+            spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos + new Vector2(0, goc.bm.dim.Y), null, Color.White); //, 0f, 0, 5f, SpriteEffects.None, 0);
+
             foreach (GameObject go in goc.gos)
             {
                 if (go != null /*goc.player*/)
@@ -115,6 +123,7 @@ namespace Tenta_Spel
 
     class GameObjectController
     {
+        public BackgroundManager bm;
         public List<GameObject> gos = new List<GameObject>();
         public Ship player;
 
@@ -124,8 +133,15 @@ namespace Tenta_Spel
         
         public GameObjectController()
         {
-            player = new Ship("Ship0", new Vector2(100, 100));
+            
+            player = new Ship("Ship0", new Vector2(0, 0));
             gos.Add(player);
+            
+        }
+
+        public void ActivateBM()
+        {
+            bm = new BackgroundManager(this);
         }
 
         public void AddGameObject(GameObject obj)
@@ -143,13 +159,34 @@ namespace Tenta_Spel
 
     class BackgroundManager
     {
-        Texture2D tex;
+        GameObjectController goc;
+        public Texture2D[] textures = new Texture2D[4];
 
-        float move = 0.1f;
+        public Vector2 pos;
+        public Vector2 dim;
+        public float speed = 0.05f;
 
-        public BackgroundManager()
+        public BackgroundManager(GameObjectController gocSet)
+        {
+            goc = gocSet;
+            for (int i = 0; i < textures.Length; i++)
+            {
+                textures[i] = goc.textureList["BG1"];
+            }
+
+            dim = new Vector2(textures[0].Width, textures[0].Height);
+        }
+
+        public void Move(GraphicsDeviceManager graphics)
         {
 
+            pos = goc.player.pos * -speed;
+            pos.X %= dim.X;
+            pos.X -= dim.X;
+            pos.X %= dim.X;
+            pos.Y %= dim.Y;
+            pos.Y -= dim.Y;
+            pos.Y %= dim.Y;
         }
     }
 
@@ -234,7 +271,7 @@ namespace Tenta_Spel
         public void Shoot(GameObjectController goc, float speed, int dmg)
         {
             canonPos = pos + Forward() * Raduis();
-            goc.AddGameObject(new Bullet("Bullet", canonPos, Forward() * speed, dmg));
+            goc.AddGameObject(new Bullet("Bullet", canonPos, velocity + Forward() * speed, dmg));
         }
 
         public void TakeDMG(int amount)
