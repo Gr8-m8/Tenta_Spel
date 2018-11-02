@@ -43,7 +43,7 @@ namespace Tenta_Spel
 
             goc.ActivateBM();
             
-            goc.AddGameObject(new GameObject("Ship1", new Vector2(100, 100)));
+            goc.AddGameObject(new GameObject("Asteroid0", new Vector2(100, 100)));
             foreach (GameObject go in goc.gos)
             {
                 go.SetSprite(goc.textureList[go.spritePath]);
@@ -88,7 +88,7 @@ namespace Tenta_Spel
                 go.ForceMove();
             }
             
-            goc.cameraPosSet(new Vector2(Window.ClientBounds.X, Window.ClientBounds.Y), goc.player.pos + goc.player.Raduis());
+            //goc.cameraPosSet(new Vector2(Window.ClientBounds.X, Window.ClientBounds.Y), goc.player.pos + goc.player.Raduis());
 
             base.Update(gameTime);
         }
@@ -107,12 +107,13 @@ namespace Tenta_Spel
 
             foreach (GameObject go in goc.gos)
             {
-                if (go != null /*goc.player*/)
+                if (go != goc.player)
                 {
-                    spriteBatch.Draw(go.sprite, go.pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth/2,graphics.PreferredBackBufferHeight/2), null, Color.White, go.rotation, go.Raduis(), 1f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(go.sprite, go.pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, go.rotation, go.Raduis(), 1f, SpriteEffects.None, 0);
                 }
             }
-            //spriteBatch.Draw(goc.player.sprite, new Vector2(Window.ClientBounds.X/0.75f + goc.player.Raduis().X, Window.ClientBounds.Y/0.75f + +goc.player.Raduis().X), null, Color.White, goc.player.rotation, goc.player.Raduis(), 1f, SpriteEffects.None, 0);
+            spriteBatch.Draw(goc.player.sprite, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, goc.player.rotation, goc.player.Raduis(), 1f, SpriteEffects.None, 0);
+
 
             spriteBatch.End();
 
@@ -150,11 +151,13 @@ namespace Tenta_Spel
             gos.Add(obj);
         }
 
+        /*
         public void cameraPosSet(Vector2 window, Vector2 posSet)
         {
             //cameraPos = new Vector2( posSet.X - (window.X /2) , posSet.Y - (window.Y /2));
             cameraPos = window/2 - (player.pos + player.Raduis());
         }
+        */
     }
 
     class BackgroundManager

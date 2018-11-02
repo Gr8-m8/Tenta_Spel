@@ -1,3 +1,5 @@
 Content\Sprites\Ship0.xnb
 Content\Sprites\ship1.xnb
 Content\Sprites\bullet.xnb
+Content\Sprites\Asteroid0.xnb
+Content\Sprites\Planet0.xnb
