@@ -38,16 +38,18 @@ namespace Tenta_Spel
             {
                 string tempPath = System.IO.Directory.GetFiles(imgPath)[i];
                 Texture2D tempTexture = Texture2D.FromStream(GraphicsDevice, new System.IO.FileStream(tempPath, System.IO.FileMode.Open));
-                goc.textureList.Add(System.IO.Directory.GetFiles(imgPath)[i].Substring(tempPath.LastIndexOf('\\') +1).Split('.')[0], tempTexture);
+                goc.textureList.Add(System.IO.Directory.GetFiles(imgPath)[i].Substring(tempPath.LastIndexOf('\\') + 1).Split('.')[0], tempTexture);
             }
 
             goc.ActivateBM();
-            
+
             goc.AddGameObject(new GameObject("Asteroid0", new Vector2(100, 100)));
             foreach (GameObject go in goc.gos)
             {
                 go.SetSprite(goc.textureList[go.spritePath]);
             }
+
+            MediaPlayer.Play(Content.Load<Song>("Sound/Mars"));
             //goc.player.SetSprite(Content.Load<Texture2D>(goc.player.spritePath));
         }
         protected override void UnloadContent()
@@ -62,7 +64,7 @@ namespace Tenta_Spel
             {
                 this.Exit();
             }
-                
+
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 goc.player.ForceAdd(goc.player.Forward(), 1f);
@@ -87,7 +89,7 @@ namespace Tenta_Spel
             {
                 go.ForceMove();
             }
-            
+
             //goc.cameraPosSet(new Vector2(Window.ClientBounds.X, Window.ClientBounds.Y), goc.player.pos + goc.player.Raduis());
 
             base.Update(gameTime);
@@ -105,6 +107,21 @@ namespace Tenta_Spel
             spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos + new Vector2(goc.bm.dim.X, goc.bm.dim.Y), null, Color.White); //, 0f, 0, 5f, SpriteEffects.None, 0);
             spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos + new Vector2(0, goc.bm.dim.Y), null, Color.White); //, 0f, 0, 5f, SpriteEffects.None, 0);
 
+            /*
+            string spriteKey = "SpaceTerrorEye0";
+            Vector2 pos = -goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+
+            Color clr = new Color(255 - Math.Min(255, 10 * (pos.X - goc.player.pos.X + pos.Y - goc.player.pos.Y)), 0, 0);
+
+            spriteBatch.Draw
+                (goc.textureList[spriteKey],
+                pos, null,
+                clr,
+                0f,
+                new Vector2(goc.textureList[spriteKey].Width / 2, goc.textureList[spriteKey].Height / 2),
+                1f,
+                SpriteEffects.None, 0);
+                */
             foreach (GameObject go in goc.gos)
             {
                 if (go != goc.player)
@@ -113,6 +130,7 @@ namespace Tenta_Spel
                 }
             }
             spriteBatch.Draw(goc.player.sprite, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, goc.player.rotation, goc.player.Raduis(), 1f, SpriteEffects.None, 0);
+
 
 
             spriteBatch.End();
@@ -131,13 +149,13 @@ namespace Tenta_Spel
         public Dictionary<string, Texture2D> textureList = new Dictionary<string, Texture2D>();
 
         public Vector2 cameraPos = new Vector2(25, 25);
-        
+
         public GameObjectController()
         {
-            
+
             player = new Ship("Ship0", new Vector2(0, 0));
             gos.Add(player);
-            
+
         }
 
         public void ActivateBM()
@@ -150,14 +168,22 @@ namespace Tenta_Spel
             obj.SetSprite(textureList[obj.spritePath]);
             gos.Add(obj);
         }
+    }
 
-        /*
-        public void cameraPosSet(Vector2 window, Vector2 posSet)
+    class Camera
+    {
+        public Vector2 pos;
+        float zoom;
+
+        public void PosSet(Vector2 posSet)
         {
-            //cameraPos = new Vector2( posSet.X - (window.X /2) , posSet.Y - (window.Y /2));
-            cameraPos = window/2 - (player.pos + player.Raduis());
+            pos = posSet;
         }
-        */
+
+        public void Move(Vector2 moveBy)
+        {
+            pos += moveBy;
+        }
     }
 
     class BackgroundManager

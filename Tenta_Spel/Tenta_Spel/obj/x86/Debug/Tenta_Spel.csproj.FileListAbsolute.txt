@@ -21,3 +21,7 @@ C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Cont
 C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\bullet.xnb
 C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\Asteroid0.xnb
 C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\Planet0.xnb
+C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\SpaceTerrorEye0.xnb
+C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\SpaceTerrorTentacle0.xnb
+C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sound\Mars.xnb
+C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sound\Mars.wma

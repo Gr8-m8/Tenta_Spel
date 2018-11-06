@@ -46,6 +46,34 @@
       <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\Planet0.xnb</Output>
       <Time>2018-11-01T18:26:29.5582968+01:00</Time>
     </Item>
+    <Item>
+      <Source>Sprites\SpaceTerrorEye0.png</Source>
+      <Name>Sprites\SpaceTerrorEye0</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\SpaceTerrorEye0.xnb</Output>
+      <Time>2018-11-02T12:27:49.2679398+01:00</Time>
+    </Item>
+    <Item>
+      <Source>Sprites\SpaceTerrorTentacle0.png</Source>
+      <Name>Sprites\SpaceTerrorTentacle0</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\SpaceTerrorTentacle0.xnb</Output>
+      <Time>2018-11-02T12:26:19.7646862+01:00</Time>
+    </Item>
+    <Item>
+      <Source>Sound\Mars.mp3</Source>
+      <Name>Sound\Mars</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sound\Mars.xnb</Output>
+      <Extra>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sound\Mars.wma</Extra>
+      <Time>2018-11-02T12:31:32.03238+01:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{9CAC5D41-D7F7-4179-89FA-B13CD5487272}</ContentProjectGUID>

@@ -48,6 +48,11 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+    <Compile Include="Sound\Mars.mp3">
+      <Name>Mars</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
     <Content Include="Sprites\BG1.png">
       <Name>BG1</Name>
       <Importer>TextureImporter</Importer>
@@ -55,6 +60,16 @@
     </Content>
     <Compile Include="Sprites\Planet0.png">
       <Name>Planet0</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\SpaceTerrorEye0.png">
+      <Name>SpaceTerrorEye0</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\SpaceTerrorTentacle0.png">
+      <Name>SpaceTerrorTentacle0</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
