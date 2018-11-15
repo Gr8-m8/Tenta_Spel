@@ -74,6 +74,24 @@
       <Extra>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sound\Mars.wma</Extra>
       <Time>2018-11-02T12:31:32.03238+01:00</Time>
     </Item>
+    <Item>
+      <Source>Utskrift\GameFont.spritefont</Source>
+      <Name>Utskrift\GameFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Utskrift\GameFont.xnb</Output>
+      <Time>2018-11-09T11:51:50.2199812+01:00</Time>
+    </Item>
+    <Item>
+      <Source>Sprites\Blank.png</Source>
+      <Name>Sprites\Blank</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\Blank.xnb</Output>
+      <Time>2018-11-10T14:34:09.3089631+01:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{9CAC5D41-D7F7-4179-89FA-B13CD5487272}</ContentProjectGUID>

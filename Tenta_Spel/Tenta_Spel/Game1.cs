@@ -15,6 +15,7 @@ namespace Tenta_Spel
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont gamefont;
 
         GameObjectController goc = new GameObjectController();
 
@@ -28,10 +29,10 @@ namespace Tenta_Spel
         {
             base.Initialize();
         }
-
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            gamefont = Content.Load<SpriteFont>("Utskrift/GameFont");
             string imgPath = @"..\..\..\..\Tenta_SpelContent\Sprites\";//"..\..\..\Resources\Sprites";
 
             for (int i = 0; i < System.IO.Directory.GetFiles(imgPath).Length; i++)
@@ -40,17 +41,21 @@ namespace Tenta_Spel
                 Texture2D tempTexture = Texture2D.FromStream(GraphicsDevice, new System.IO.FileStream(tempPath, System.IO.FileMode.Open));
                 goc.textureList.Add(System.IO.Directory.GetFiles(imgPath)[i].Substring(tempPath.LastIndexOf('\\') + 1).Split('.')[0], tempTexture);
             }
+            goc.Activate();
 
-            goc.ActivateBM();
-
-            goc.AddGameObject(new GameObject("Asteroid0", new Vector2(100, 100)));
-            foreach (GameObject go in goc.gos)
-            {
-                go.SetSprite(goc.textureList[go.spritePath]);
-            }
+            //new Ship(goc,"Ship1", new Vector2(0, 5));
+            new Planet(goc, "Planet0", new Vector2(0, 0), Color.White);
 
             MediaPlayer.Play(Content.Load<Song>("Sound/Mars"));
-            //goc.player.SetSprite(Content.Load<Texture2D>(goc.player.spritePath));
+
+            float windowScale = Math.Min(1f, 1f);
+            graphics.PreferredBackBufferWidth = Convert.ToInt32(GraphicsDevice.DisplayMode.Width * windowScale);
+            graphics.PreferredBackBufferHeight = Convert.ToInt32(GraphicsDevice.DisplayMode.Height * windowScale);
+            if (windowScale == 1)
+            {
+                graphics.IsFullScreen = true;
+            }
+            graphics.ApplyChanges();
         }
         protected override void UnloadContent()
         {
@@ -64,10 +69,17 @@ namespace Tenta_Spel
             {
                 this.Exit();
             }
-
+            if (keyboardState.IsKeyDown(Keys.Q))
+            {
+                foreach (GameObject go in goc.gos)
+                {
+                    Console.Write(go + " |");
+                }
+                Console.WriteLine();
+            }
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                goc.player.ForceAdd(goc.player.Forward(), 1f);
+                goc.player.ForceAdd(goc.player.Forward(), 0.5f);
             }
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
@@ -77,20 +89,87 @@ namespace Tenta_Spel
             {
                 goc.player.rotation -= 0.1f;
             }
-
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
             {
                 goc.player.Shoot(goc, 10, 1);
             }
 
-            goc.bm.Move(graphics);
+            goc.bm.Move();
+
+            List<GameObject> markedForDelete = new List<GameObject>();
 
             foreach (GameObject go in goc.gos)
             {
                 go.ForceMove();
+
+                if (go.markForDelete)
+                {
+                    markedForDelete.Add(go);
+                }
             }
 
-            //goc.cameraPosSet(new Vector2(Window.ClientBounds.X, Window.ClientBounds.Y), goc.player.pos + goc.player.Raduis());
+            while(markedForDelete.Count > 0)
+            {
+                goc.gos.Remove(markedForDelete.Last<GameObject>());
+                markedForDelete.Remove(markedForDelete.Last<GameObject>());
+            }
+
+            foreach (GameObject go in goc.bullets)
+            {
+                go.ForceMove();
+
+                if (go.markForDelete)
+                {
+                    markedForDelete.Add(go);
+                }
+            }
+
+            while (markedForDelete.Count > 0)
+            {
+                goc.bullets.Remove(markedForDelete.Cast<Bullet>().Last<Bullet>());
+                markedForDelete.Remove(markedForDelete.Last<GameObject>());
+            }
+
+            foreach (GameObject go in goc.ships)
+            {
+                go.ForceMove();
+
+                if (go.markForDelete)
+                {
+                    markedForDelete.Add(go);
+                }
+            }
+
+            while (markedForDelete.Count > 0)
+            {
+                goc.ships.Remove(markedForDelete.Cast<Ship>().Last<Ship>());
+                markedForDelete.Remove(markedForDelete.Last<GameObject>());
+            }
+
+            foreach (GameObject go in goc.planets)
+            {
+                go.ForceMove();
+
+                if (go.markForDelete)
+                {
+                    markedForDelete.Add(go);
+                }
+            }
+
+            while (markedForDelete.Count > 0)
+            {
+                goc.planets.Remove(markedForDelete.Cast<Planet>().Last<Planet>());
+                markedForDelete.Remove(markedForDelete.Last<GameObject>());
+            }
+
+            Random r = new Random();
+            if (r.Next(10000) > 10000 - 2)
+            {
+                Vector2 spawnPos = new Vector2(goc.player.pos.X + graphics.PreferredBackBufferHeight, goc.player.pos.Y + r.Next(-graphics.PreferredBackBufferHeight / 2, graphics.PreferredBackBufferHeight / 2));
+                Bullet go = new Bullet(goc, "Asteroid0", spawnPos, (goc.player.pos - spawnPos) * 0.004f, 50, 10000);
+            }
+
+            goc.player.tickShootCooldown = Math.Min(goc.player.tickShootCooldown + 1, goc.player.shootCooldown);
 
             base.Update(gameTime);
         }
@@ -102,232 +181,71 @@ namespace Tenta_Spel
 
             spriteBatch.Begin();
 
-            spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos + new Vector2(0, 0), null, Color.White); //, 0f, 0, 5f, SpriteEffects.None, 0);
-            spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos + new Vector2(goc.bm.dim.X, 0), null, Color.White); //, 0f, 0, 5f, SpriteEffects.None, 0);
-            spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos + new Vector2(goc.bm.dim.X, goc.bm.dim.Y), null, Color.White); //, 0f, 0, 5f, SpriteEffects.None, 0);
-            spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos + new Vector2(0, goc.bm.dim.Y), null, Color.White); //, 0f, 0, 5f, SpriteEffects.None, 0);
+            for (int i = 0; i < 4; i++)
+            {
+                spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos[i], null, Color.White);
+            }
 
-            /*
-            string spriteKey = "SpaceTerrorEye0";
-            Vector2 pos = -goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+            if (goc.planets.Count > 0)
+            {
+                foreach (Planet go in goc.planets)
+                {
+                    if (go != null)
+                    {
+                        spriteBatch.Draw(go.sprite, go.pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, go.planetColor, go.rotation, go.Raduis(), go.scale, SpriteEffects.None, 0);
+                    }
+                }
+            }
 
-            Color clr = new Color(255 - Math.Min(255, 10 * (pos.X - goc.player.pos.X + pos.Y - goc.player.pos.Y)), 0, 0);
-
-            spriteBatch.Draw
-                (goc.textureList[spriteKey],
-                pos, null,
-                clr,
-                0f,
-                new Vector2(goc.textureList[spriteKey].Width / 2, goc.textureList[spriteKey].Height / 2),
-                1f,
-                SpriteEffects.None, 0);
-                */
             foreach (GameObject go in goc.gos)
             {
-                if (go != goc.player)
+                if (go != null)
                 {
                     spriteBatch.Draw(go.sprite, go.pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, go.rotation, go.Raduis(), 1f, SpriteEffects.None, 0);
                 }
             }
+            
+            foreach (GameObject go in goc.ships)
+            {
+                if (go != null)
+                {
+                    if (go != goc.player)
+                    {
+                        spriteBatch.Draw(go.sprite, go.pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, go.rotation, go.Raduis(), 1f, SpriteEffects.None, 0);
+                    }
+                }
+            }
+
+            if (goc.bullets.Count > 0)
+            {
+                foreach (GameObject go in goc.bullets)
+                {
+                    if (go != null)
+                    {
+                        spriteBatch.Draw(go.sprite, go.pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, go.rotation, go.Raduis(), 1f, SpriteEffects.None, 0);
+                    }
+                }
+            }
+
             spriteBatch.Draw(goc.player.sprite, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, goc.player.rotation, goc.player.Raduis(), 1f, SpriteEffects.None, 0);
 
 
+            //UI
+
+            spriteBatch.DrawString(gamefont, (new Vector2(Convert.ToInt32(goc.player.pos.X / 100), Convert.ToInt32(goc.player.pos.Y / 100))).ToString(), new Vector2(2, 2), Color.White);
+
+            int[] uiPos = new int[2] { 0, graphics.PreferredBackBufferHeight - 14 - 20 };
+            int[] uiSize = new int[2] { graphics.PreferredBackBufferWidth, 14 + 20 };
+            int blockSize = Convert.ToInt32(graphics.PreferredBackBufferWidth * 0.15);
+            int borderSize = 2;
+
+            spriteBatch.Draw(goc.GetTexture(""), new Rectangle(uiPos[0], uiPos[1], uiSize[0], uiSize[1]), Color.Black);
+            spriteBatch.Draw(goc.GetTexture(""), new Rectangle(uiPos[0] + borderSize, uiPos[1] + borderSize, blockSize - borderSize, uiSize[1] - 2*borderSize), Color.Purple);
+            
+
 
             spriteBatch.End();
-
-
             base.Draw(gameTime);
-        }
-    }
-
-    class GameObjectController
-    {
-        public BackgroundManager bm;
-        public List<GameObject> gos = new List<GameObject>();
-        public Ship player;
-
-        public Dictionary<string, Texture2D> textureList = new Dictionary<string, Texture2D>();
-
-        public Vector2 cameraPos = new Vector2(25, 25);
-
-        public GameObjectController()
-        {
-
-            player = new Ship("Ship0", new Vector2(0, 0));
-            gos.Add(player);
-
-        }
-
-        public void ActivateBM()
-        {
-            bm = new BackgroundManager(this);
-        }
-
-        public void AddGameObject(GameObject obj)
-        {
-            obj.SetSprite(textureList[obj.spritePath]);
-            gos.Add(obj);
-        }
-    }
-
-    class Camera
-    {
-        public Vector2 pos;
-        float zoom;
-
-        public void PosSet(Vector2 posSet)
-        {
-            pos = posSet;
-        }
-
-        public void Move(Vector2 moveBy)
-        {
-            pos += moveBy;
-        }
-    }
-
-    class BackgroundManager
-    {
-        GameObjectController goc;
-        public Texture2D[] textures = new Texture2D[4];
-
-        public Vector2 pos;
-        public Vector2 dim;
-        public float speed = 0.05f;
-
-        public BackgroundManager(GameObjectController gocSet)
-        {
-            goc = gocSet;
-            for (int i = 0; i < textures.Length; i++)
-            {
-                textures[i] = goc.textureList["BG1"];
-            }
-
-            dim = new Vector2(textures[0].Width, textures[0].Height);
-        }
-
-        public void Move(GraphicsDeviceManager graphics)
-        {
-
-            pos = goc.player.pos * -speed;
-            pos.X %= dim.X;
-            pos.X -= dim.X;
-            pos.X %= dim.X;
-            pos.Y %= dim.Y;
-            pos.Y -= dim.Y;
-            pos.Y %= dim.Y;
-        }
-    }
-
-    class GameObject
-    {
-        public string spritePath;
-        public Texture2D sprite;
-
-        float speed = 0.1f;
-        public Vector2 pos;
-        public float rotation;
-
-        int hitboxRadius;
-
-        public Vector2 velocity;
-        float fullThrust = 0.3f;
-        float friction = 0.99f;
-        bool isGravity = false;
-
-        public GameObject(string spritePathSet, Vector2 startPos)
-        {
-            spritePath = spritePathSet;
-            pos = startPos;
-
-            //hitbox = new BoundingSphere(pos + Origin(), Origin().Y);
-        }
-
-        public void SetSprite(Texture2D spriteSet)
-        {
-            sprite = spriteSet;
-        }
-
-        public bool Collision(GameObject other)
-        {
-            if (pos.X - other.pos.X + pos.Y - other.pos.Y < hitboxRadius + other.hitboxRadius)
-            {
-                return true;
-            } else
-            {
-                return false;
-            }
-        }
-
-        public Vector2 Raduis()
-        {
-            return new Vector2(sprite.Width/2, sprite.Height/2);
-        }
-
-        public Vector2 Forward()
-        {
-            return new Vector2((float)-Math.Sin(rotation), (float)Math.Cos(rotation));
-        }
-
-        public void Move(Vector2 moveTo)
-        {
-            pos = moveTo;
-        }
-
-        public void ForceMove()
-        {
-            velocity *= friction;
-            pos += velocity;
-        }
-
-        public void ForceAdd(Vector2 dir, float acc)
-        {
-            velocity += dir * acc * fullThrust;
-        }
-    }
-
-    class Ship : GameObject
-    {
-        public Ship(string spritePathSet, Vector2 startPos) : base(spritePathSet, startPos)
-        {
-            spritePath = spritePathSet;
-            pos = startPos;
-        }
-
-        int hp = 100;
-        Vector2 canonPos;
-
-        public void Shoot(GameObjectController goc, float speed, int dmg)
-        {
-            canonPos = pos + Forward() * Raduis();
-            goc.AddGameObject(new Bullet("Bullet", canonPos, velocity + Forward() * speed, dmg));
-        }
-
-        public void TakeDMG(int amount)
-        {
-            hp -= amount;
-        }
-
-        public void Beam()
-        {
-
-        }
-    }
-
-    class Bullet : GameObject
-    {
-        int dmg;
-        public Bullet(string spritePathSet, Vector2 startPos, Vector2 dir, int dmgSet) : base(spritePathSet, startPos)
-        {
-            spritePath = "Bullet";
-            pos = startPos;
-            velocity = dir;
-            dmg = dmgSet;
-        }
-
-        public void ForceMove()
-        {
-            pos += velocity;
         }
     }
 }

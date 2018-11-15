@@ -7,3 +7,5 @@ Content\Sprites\SpaceTerrorEye0.xnb
 Content\Sprites\SpaceTerrorTentacle0.xnb
 Content\Sound\Mars.xnb
 Content\Sound\Mars.wma
+Content\Utskrift\GameFont.xnb
+Content\Sprites\Blank.xnb
