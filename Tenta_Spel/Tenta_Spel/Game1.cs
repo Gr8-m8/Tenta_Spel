@@ -18,6 +18,8 @@ namespace Tenta_Spel
         SpriteFont gamefont;
 
         GameObjectController goc = new GameObjectController();
+        Player player;
+        UIManager uim = new UIManager();
 
         public Game1()
         {
@@ -33,7 +35,8 @@ namespace Tenta_Spel
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             gamefont = Content.Load<SpriteFont>("Utskrift/GameFont");
-            string imgPath = @"..\..\..\..\Tenta_SpelContent\Sprites\";//"..\..\..\Resources\Sprites";
+            
+            string imgPath = @"..\..\..\..\Tenta_SpelContent\Sprites\";
 
             for (int i = 0; i < System.IO.Directory.GetFiles(imgPath).Length; i++)
             {
@@ -42,11 +45,13 @@ namespace Tenta_Spel
                 goc.textureList.Add(System.IO.Directory.GetFiles(imgPath)[i].Substring(tempPath.LastIndexOf('\\') + 1).Split('.')[0], tempTexture);
             }
             goc.Activate();
-
+            player = new Player(goc);
             //new Ship(goc,"Ship1", new Vector2(0, 5));
             new Planet(goc, "Planet0", new Vector2(0, 0), Color.White);
 
             MediaPlayer.Play(Content.Load<Song>("Sound/Mars"));
+
+            UIContainer statusbar = new UIContainer(uim, new Vector2(0, graphics.PreferredBackBufferHeight/90), new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight/10), Color.Black ,2);
 
             float windowScale = Math.Min(1f, 1f);
             graphics.PreferredBackBufferWidth = Convert.ToInt32(GraphicsDevice.DisplayMode.Width * windowScale);
@@ -69,6 +74,7 @@ namespace Tenta_Spel
             {
                 this.Exit();
             }
+
             if (keyboardState.IsKeyDown(Keys.Q))
             {
                 foreach (GameObject go in goc.gos)
@@ -77,22 +83,8 @@ namespace Tenta_Spel
                 }
                 Console.WriteLine();
             }
-            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
-            {
-                goc.player.ForceAdd(goc.player.Forward(), 0.5f);
-            }
-            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
-            {
-                goc.player.rotation += 0.1f;
-            }
-            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
-            {
-                goc.player.rotation -= 0.1f;
-            }
-            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
-            {
-                goc.player.Shoot(goc, 10, 1);
-            }
+
+            player.Movement(keyboardState);
 
             goc.bm.Move();
 
@@ -232,18 +224,24 @@ namespace Tenta_Spel
 
             //UI
 
+            foreach (UIContainer uc in uim.uiCs)
+            {
+                foreach (UIElement ue in uc.uiElements)
+                {
+
+                }
+            }
+            /*
             spriteBatch.DrawString(gamefont, (new Vector2(Convert.ToInt32(goc.player.pos.X / 100), Convert.ToInt32(goc.player.pos.Y / 100))).ToString(), new Vector2(2, 2), Color.White);
 
-            int[] uiPos = new int[2] { 0, graphics.PreferredBackBufferHeight - 14 - 20 };
-            int[] uiSize = new int[2] { graphics.PreferredBackBufferWidth, 14 + 20 };
-            int blockSize = Convert.ToInt32(graphics.PreferredBackBufferWidth * 0.15);
-            int borderSize = 2;
-
-            spriteBatch.Draw(goc.GetTexture(""), new Rectangle(uiPos[0], uiPos[1], uiSize[0], uiSize[1]), Color.Black);
-            spriteBatch.Draw(goc.GetTexture(""), new Rectangle(uiPos[0] + borderSize, uiPos[1] + borderSize, blockSize - borderSize, uiSize[1] - 2*borderSize), Color.Purple);
-            
-
-
+            spriteBatch.Draw(goc.GetTexture(""), statusbar.dims(), Color.Black);
+            for (int i = 0; i < 6; i++)
+            {
+                spriteBatch.Draw(goc.GetTexture(""), new Rectangle(uiPos[0] + borderSize + i * blockSize[0], uiPos[1] + borderSize, blockSize[0] - borderSize, blockSize[1]), uiclr);
+                //spriteBatch.Draw(goc.GetTexture(""), new Rectangle(uiPos[0] + 2 * borderSize + i * blockSize[0], uiPos[1] + borderSize, barsize[0], barsize[1]), Color.Red);
+                //spriteBatch.Draw(goc.GetTexture(""), new Rectangle(uiPos[0] + borderSize + i * blockSize[0], uiPos[1] + borderSize, barsize[0], barsize[1]), Color.Green);
+            }
+            */
             spriteBatch.End();
             base.Draw(gameTime);
         }

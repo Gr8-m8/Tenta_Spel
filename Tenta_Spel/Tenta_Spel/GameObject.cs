@@ -15,6 +15,8 @@ namespace Tenta_Spel
     {
         public GameObjectController goc;
 
+        public Type T;
+
         public Texture2D sprite;
         public string spriteKey;
 
@@ -39,6 +41,7 @@ namespace Tenta_Spel
             pos = startPos;
 
             Create();
+            T = this.GetType();
         }
 
         public bool Collision(GameObject other)

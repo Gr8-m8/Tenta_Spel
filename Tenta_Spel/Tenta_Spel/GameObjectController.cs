@@ -13,8 +13,6 @@ namespace Tenta_Spel
 {
     class GameObjectController
     {
-
-        public Game1 gctrl;
         public BackgroundManager bm;
 
         public List<GameObject> gos = new List<GameObject>();
@@ -36,8 +34,6 @@ namespace Tenta_Spel
         {
             bm = new BackgroundManager(this);
 
-            player = new Ship(this, "Ship0", new Vector2(0, 0));
-            gos.Add(player);
         }
 
         public Texture2D GetTexture(string skey)
