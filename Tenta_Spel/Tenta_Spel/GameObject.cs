@@ -14,11 +14,12 @@ namespace Tenta_Spel
     class GameObject
     {
         public GameObjectController goc;
-
         public Type T;
+        public int rendLayer;
 
         public Texture2D sprite;
-        public string spriteKey;
+        int renderLayer = 4;
+
 
         float speed = 0.1f;
         public Vector2 pos;
@@ -32,6 +33,7 @@ namespace Tenta_Spel
         bool isGravity = false;
 
         public bool markForDelete = false;
+        public bool explode = false;
 
         public GameObject(GameObjectController gocSet, string spriteKeySet, Vector2 startPos)
         {
@@ -40,23 +42,44 @@ namespace Tenta_Spel
             sprite = goc.GetTexture(spriteKeySet);
             pos = startPos;
 
-            Create();
             T = this.GetType();
+            goc.gos.Add(this);
         }
 
-        public bool Collision(GameObject other)
+        public List<GameObject> CollisionObjects()
         {
-            if (pos.X - other.pos.X + pos.Y - other.pos.Y < hitboxRadius + other.hitboxRadius)
+            List<GameObject> collObj = new List<GameObject>();
+            foreach (GameObject go in goc.gos)
             {
-                return true;
+                if (go != this)
+                {
+                    if (Math.Sqrt(((pos.X - go.pos.X) * (pos.X - go.pos.X)) + ((pos.Y - go.pos.Y) * (pos.Y - go.pos.Y))) <= Raduis().X + go.Raduis().X)
+                    {
+                        collObj.Add(go);
+                    }
+                }
             }
-            else
+            return collObj;
+        }
+
+        public virtual void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+
+            spriteBatch.Draw(sprite, pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), 1f, SpriteEffects.None, 0);
+        }
+
+        public virtual void Collision()
+        {
+            foreach (GameObject go in CollisionObjects())
             {
-                return false;
+                if (go.T != typeof(Planet))
+                {
+                    ForceAdd(go.velocity, 0.97f);
+                }
             }
         }
 
-        public Vector2 Raduis()
+        public virtual Vector2 Raduis()
         {
             return new Vector2(sprite.Width / 2, sprite.Height / 2);
         }
@@ -82,25 +105,33 @@ namespace Tenta_Spel
             velocity += dir * acc * fullThrust;
         }
 
-        public virtual void Create()
+        public void Create()
         {
-            goc.gos.Add(this);
+            T = this.GetType();
         }
 
-        public virtual void Delete()
+        public void Delete()
         {
             if (goc.gos.Contains(this))
             {
                 goc.gos.Remove(this);
             }
         }
+
+        public void Update()
+        {
+            ForceMove();
+            Collision();
+        }
     }
 
     class Ship : GameObject
     {
+        List<Bullet> bullets = new List<Bullet>();
+
         public Ship(GameObjectController gocSet, string spriteKeySet, Vector2 startPos) : base(gocSet, spriteKeySet, startPos)
         {
-
+            rendLayer = 3;
         }
 
 
@@ -109,41 +140,62 @@ namespace Tenta_Spel
 
         public void Shoot(GameObjectController goc, float speed, int dmg)
         {
-            if (tickShootCooldown >= shootCooldown)
+            if (hp > 0)
             {
-                tickShootCooldown = 0;
-                Vector2 canonPos = pos + Forward() * Raduis();
-                new Bullet(goc, "Bullet", canonPos, velocity + Forward() * speed, dmg, 200);
+                if (tickShootCooldown >= shootCooldown)
+                {
+                    tickShootCooldown = 0;
+                    Vector2 canonPos = pos + Forward() * Raduis();
+                    bullets.Add(new Bullet(goc, "Bullet", canonPos, velocity + Forward() * speed, dmg, 200));
+                }
+            }
+        }
+
+        public override void Collision()
+        {
+            foreach (GameObject go in CollisionObjects())
+            {
+                //base.Collision();
+                if (go.T != typeof(Planet) || go.T != typeof(Bullet))
+                {
+                    //ForceAdd(go.velocity, 0.97f);
+                }
+
+                if (go.T == typeof(Bullet))
+                {
+                    Bullet blt = (Bullet)go;
+                    if (!bullets.Contains(blt))
+                    {
+                        HeathManager(blt.dmg);
+                        explode = true;
+                        go.markForDelete = true;
+                    }
+                }
             }
         }
 
         int hp = 100;
         public void HeathManager(int amount)
         {
+            Console.WriteLine(hp + " | " + amount);
             hp -= amount;
 
             if (hp < 1)
             {
                 Console.WriteLine(this + " died!");
+                explode = true;
+                markForDelete = true;
+
+                if (this == goc.player)
+                {
+                    rendLayer = 9;
+                }
             }
         }
 
         public void Beam()
         {
 
-        }
-
-        public override void Create()
-        {
-            goc.ships.Add(this);
-        }
-
-        public override void Delete()
-        {
-            if (goc.ships.Contains(this))
-            {
-                goc.ships.Remove(this);
-            }
         }
     }
 
@@ -152,38 +204,48 @@ namespace Tenta_Spel
         int tickAge = 0;
         int lifeSpan;
 
-        int dmg;
+        public int dmg;
+
         public Bullet(GameObjectController gocSet, string spriteKeySet, Vector2 startPos, Vector2 dir, int dmgSet, int lifeSpanSet) : base(gocSet, spriteKeySet, startPos)
         {
-            //sprite = goc.GetTexture("Bullet");
             velocity = dir;
             dmg = dmgSet;
             lifeSpan = lifeSpanSet;
+
+            rendLayer = 2;
 
             Create();
         }
 
         public override void ForceMove()
         {
-            pos += velocity;
-            tickAge += 1;
 
-            if (tickAge > lifeSpan)
+            pos += velocity;
+
+            float range = (float)Math.Sqrt((pos.X - goc.player.pos.X) * (pos.X - goc.player.pos.X) + (pos.Y - goc.player.pos.Y) * (pos.Y - goc.player.pos.Y));
+            int maxRange = 2000;
+            if (range > maxRange || range < -maxRange)
             {
-                markForDelete = true;
+                tickAge += 1;
+                if (tickAge > lifeSpan)
+                {
+                    markForDelete = true;
+                }
+            } else
+            {
+                tickAge = 0;
             }
         }
 
-        public override void Create()
+        public override void Collision()
         {
-            goc.bullets.Add(this);
-        }
-
-        public override void Delete()
-        {
-            if (goc.bullets.Contains(this))
+            //base.Collision();
+            foreach (GameObject go in CollisionObjects())
             {
-                goc.bullets.Remove(this);
+                if (go.T == typeof(Bullet))
+                {
+                    go.markForDelete = true;
+                }
             }
         }
     }
@@ -192,33 +254,80 @@ namespace Tenta_Spel
     {
         public Color planetColor;
         public float scale;
+        //float rotationSpeed = 0.0002f - new Random().Next(1);
 
-        public Planet(GameObjectController gocSet, string spriteKeySet, Vector2 startPos, Color clrSet) : base(gocSet, spriteKeySet, startPos)
+        public Planet(GameObjectController gocSet, string spriteKeySet, Vector2 startPos) : base(gocSet, spriteKeySet, startPos)
         {
             Random r = new Random();
             planetColor = new Color(r.Next(255), r.Next(255), r.Next(255));
             scale = 1 + float.Parse((r.NextDouble() * 5).ToString());
 
-            Console.WriteLine(planetColor + " | " + scale);
+            rendLayer = 5;
         }
 
         public override void ForceMove()
         {
             rotation += 0.0002f;
+            //rotation += rotationSpeed;
         }
 
-
-        public override void Create()
+        public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
-            goc.planets.Add(this);
+            spriteBatch.Draw(sprite, pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, planetColor, rotation, Raduis(), scale, SpriteEffects.None, 1);
+        }
+    }
+
+    class Explosion : GameObject
+    {
+        float lifespanMax = 5;
+        float lifespan = 0;
+
+        float radius;
+
+        public Explosion(GameObjectController gocSet, string spriteKeySet, Vector2 startPos, float radiusSet) : base(gocSet, spriteKeySet, startPos)
+        {
+            rendLayer = 3;
+            radius = radiusSet/Raduis().X;
         }
 
-        public override void Delete()
+        float Scale(float x)
         {
-            if (goc.planets.Contains(this))
+            
+            float t = 0.001f;
+            float k = (float) Math.Sqrt(t);
+               
+            x = Math.Max(0, x);
+            float y = Math.Max(0, -t*(x * x) + 2 * k * x + 1);
+
+            Console.WriteLine("("+x+";"+y+")");
+
+            if(y <= 0)
             {
-                goc.planets.Remove(this);
+                markForDelete = true;
             }
+
+            return y * radius;
+        }
+
+        public override void Collision()
+        {
+            //base.Collision();
+
+            foreach(GameObject go in goc.gos)
+            {
+                if (go.T == typeof(Ship))
+                {
+                    Ship shp = (Ship)go;
+                    //shp.HeathManager(Convert.ToInt32(radius));
+                }
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            lifespan += 0.1f;
+
+            spriteBatch.Draw(sprite, pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), Scale(lifespan), SpriteEffects.None, 1);
         }
     }
 }

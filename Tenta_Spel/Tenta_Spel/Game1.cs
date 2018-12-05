@@ -17,6 +17,7 @@ namespace Tenta_Spel
         SpriteBatch spriteBatch;
         SpriteFont gamefont;
 
+        WindowManager wm;
         GameObjectController goc = new GameObjectController();
         Player player;
         UIManager uim = new UIManager();
@@ -33,6 +34,7 @@ namespace Tenta_Spel
         }
         protected override void LoadContent()
         {
+            wm = new WindowManager(graphics);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             gamefont = Content.Load<SpriteFont>("Utskrift/GameFont");
             
@@ -46,21 +48,17 @@ namespace Tenta_Spel
             }
             goc.Activate();
             player = new Player(goc);
-            //new Ship(goc,"Ship1", new Vector2(0, 5));
-            new Planet(goc, "Planet0", new Vector2(0, 0), Color.White);
+            new Ship(goc,"Ship1", new Vector2(0, 5));
+            new Planet(goc, "Planet0", new Vector2(0, 0));
+            new Explosion(goc, "Explosion0", new Vector2(0, 0), 100);
 
             MediaPlayer.Play(Content.Load<Song>("Sound/Mars"));
 
             UIContainer statusbar = new UIContainer(uim, new Vector2(0, graphics.PreferredBackBufferHeight/90), new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight/10), Color.Black ,2);
 
-            float windowScale = Math.Min(1f, 1f);
-            graphics.PreferredBackBufferWidth = Convert.ToInt32(GraphicsDevice.DisplayMode.Width * windowScale);
-            graphics.PreferredBackBufferHeight = Convert.ToInt32(GraphicsDevice.DisplayMode.Height * windowScale);
-            if (windowScale == 1)
-            {
-                graphics.IsFullScreen = true;
-            }
-            graphics.ApplyChanges();
+            //WINDOWINPUTSCALE
+            wm.WindowScaleSet(1f);
+            wm.WindowScale(GraphicsDevice);
         }
         protected override void UnloadContent()
         {
@@ -75,93 +73,38 @@ namespace Tenta_Spel
                 this.Exit();
             }
 
+            if (keyboardState.IsKeyDown(Keys.OemPlus))
+            {
+                wm.WindowScaleScale(0.1f);
+                wm.WindowScale(GraphicsDevice);
+            }
+
+            if (keyboardState.IsKeyDown(Keys.OemMinus))
+            {
+                wm.WindowScaleScale(-0.1f);
+                wm.WindowScale(GraphicsDevice);
+            }
+
             if (keyboardState.IsKeyDown(Keys.Q))
             {
                 foreach (GameObject go in goc.gos)
                 {
-                    Console.Write(go + " |");
+                    Console.Write(go.T + " | " + typeof(Bullet) + " |");
+                    if (go.T == typeof(Bullet))
+                    {
+                        Console.Write(" isTrue");
+                    }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
+                Console.WriteLine("--- --- ---");
+
             }
+            //UPDATE
 
-            player.Movement(keyboardState);
+            goc.Update(graphics);
 
-            goc.bm.Move();
+            player.Update(keyboardState);
 
-            List<GameObject> markedForDelete = new List<GameObject>();
-
-            foreach (GameObject go in goc.gos)
-            {
-                go.ForceMove();
-
-                if (go.markForDelete)
-                {
-                    markedForDelete.Add(go);
-                }
-            }
-
-            while(markedForDelete.Count > 0)
-            {
-                goc.gos.Remove(markedForDelete.Last<GameObject>());
-                markedForDelete.Remove(markedForDelete.Last<GameObject>());
-            }
-
-            foreach (GameObject go in goc.bullets)
-            {
-                go.ForceMove();
-
-                if (go.markForDelete)
-                {
-                    markedForDelete.Add(go);
-                }
-            }
-
-            while (markedForDelete.Count > 0)
-            {
-                goc.bullets.Remove(markedForDelete.Cast<Bullet>().Last<Bullet>());
-                markedForDelete.Remove(markedForDelete.Last<GameObject>());
-            }
-
-            foreach (GameObject go in goc.ships)
-            {
-                go.ForceMove();
-
-                if (go.markForDelete)
-                {
-                    markedForDelete.Add(go);
-                }
-            }
-
-            while (markedForDelete.Count > 0)
-            {
-                goc.ships.Remove(markedForDelete.Cast<Ship>().Last<Ship>());
-                markedForDelete.Remove(markedForDelete.Last<GameObject>());
-            }
-
-            foreach (GameObject go in goc.planets)
-            {
-                go.ForceMove();
-
-                if (go.markForDelete)
-                {
-                    markedForDelete.Add(go);
-                }
-            }
-
-            while (markedForDelete.Count > 0)
-            {
-                goc.planets.Remove(markedForDelete.Cast<Planet>().Last<Planet>());
-                markedForDelete.Remove(markedForDelete.Last<GameObject>());
-            }
-
-            Random r = new Random();
-            if (r.Next(10000) > 10000 - 2)
-            {
-                Vector2 spawnPos = new Vector2(goc.player.pos.X + graphics.PreferredBackBufferHeight, goc.player.pos.Y + r.Next(-graphics.PreferredBackBufferHeight / 2, graphics.PreferredBackBufferHeight / 2));
-                Bullet go = new Bullet(goc, "Asteroid0", spawnPos, (goc.player.pos - spawnPos) * 0.004f, 50, 10000);
-            }
-
-            goc.player.tickShootCooldown = Math.Min(goc.player.tickShootCooldown + 1, goc.player.shootCooldown);
 
             base.Update(gameTime);
         }
@@ -175,52 +118,23 @@ namespace Tenta_Spel
 
             for (int i = 0; i < 4; i++)
             {
-                spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos[i], null, Color.White);
-            }
-
-            if (goc.planets.Count > 0)
-            {
-                foreach (Planet go in goc.planets)
-                {
-                    if (go != null)
-                    {
-                        spriteBatch.Draw(go.sprite, go.pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, go.planetColor, go.rotation, go.Raduis(), go.scale, SpriteEffects.None, 0);
-                    }
-                }
+                spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos[i], null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
             }
 
             foreach (GameObject go in goc.gos)
             {
-                if (go != null)
+                for (int i = 0; i < 5; i++)
                 {
-                    spriteBatch.Draw(go.sprite, go.pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, go.rotation, go.Raduis(), 1f, SpriteEffects.None, 0);
+                    if (go.rendLayer == i)
+                    {
+                        go.Draw(spriteBatch, graphics);
+                    }
                 }
             }
+
             
-            foreach (GameObject go in goc.ships)
-            {
-                if (go != null)
-                {
-                    if (go != goc.player)
-                    {
-                        spriteBatch.Draw(go.sprite, go.pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, go.rotation, go.Raduis(), 1f, SpriteEffects.None, 0);
-                    }
-                }
-            }
-
-            if (goc.bullets.Count > 0)
-            {
-                foreach (GameObject go in goc.bullets)
-                {
-                    if (go != null)
-                    {
-                        spriteBatch.Draw(go.sprite, go.pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, go.rotation, go.Raduis(), 1f, SpriteEffects.None, 0);
-                    }
-                }
-            }
-
-            spriteBatch.Draw(goc.player.sprite, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, goc.player.rotation, goc.player.Raduis(), 1f, SpriteEffects.None, 0);
-
+            //spriteBatch.Draw(goc.player.sprite, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, goc.player.rotation, goc.player.Raduis(), 1f, SpriteEffects.None, 0);
+            
 
             //UI
 
@@ -231,9 +145,9 @@ namespace Tenta_Spel
 
                 }
             }
+            //*
+            spriteBatch.DrawString(gamefont, (new Vector2(Convert.ToInt32(goc.player.pos.X / 100), Convert.ToInt32(goc.player.pos.Y / 100))).ToString(), new Vector2(2, 2), Color.Yellow);
             /*
-            spriteBatch.DrawString(gamefont, (new Vector2(Convert.ToInt32(goc.player.pos.X / 100), Convert.ToInt32(goc.player.pos.Y / 100))).ToString(), new Vector2(2, 2), Color.White);
-
             spriteBatch.Draw(goc.GetTexture(""), statusbar.dims(), Color.Black);
             for (int i = 0; i < 6; i++)
             {

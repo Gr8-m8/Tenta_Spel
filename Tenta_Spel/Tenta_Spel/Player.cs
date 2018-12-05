@@ -16,11 +16,21 @@ namespace Tenta_Spel
         Ship ship;
         GameObjectController goc;
 
+        bool dead = false;
+
         public Player(GameObjectController gocSet)
         {
             goc = gocSet;
             ship = new Ship(goc, "Ship0", new Vector2(0, 0));
             goc.player = ship;
+            ship.rendLayer = 0;
+        }
+
+        public void Update(KeyboardState keyboardState)
+        {
+            Movement(keyboardState);
+            ship.rendLayer = 0;
+            ship.tickShootCooldown = Math.Min(ship.tickShootCooldown + 1, goc.player.shootCooldown);
         }
 
         public void Movement(KeyboardState keyboardState)
@@ -40,11 +50,18 @@ namespace Tenta_Spel
                 ship.rotation -= 0.1f;
             }
 
-            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
+            if (keyboardState.IsKeyDown(Keys.C) || keyboardState.IsKeyDown(Keys.K))
             {
                ship.Shoot(goc, 10, 1);
             }
+        }
 
+        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            if (!dead)
+            {
+                spriteBatch.Draw(goc.player.sprite, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, goc.player.rotation, goc.player.Raduis(), 1f, SpriteEffects.None, 0);
+            }
         }
     }
 }
