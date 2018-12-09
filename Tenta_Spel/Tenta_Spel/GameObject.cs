@@ -65,7 +65,7 @@ namespace Tenta_Spel
         public virtual void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
 
-            spriteBatch.Draw(sprite, pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), 1f, SpriteEffects.None, 0);
+            spriteBatch.Draw(sprite, pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), 1f, SpriteEffects.None, 1);
         }
 
         public virtual void Collision()
@@ -131,7 +131,7 @@ namespace Tenta_Spel
 
         public Ship(GameObjectController gocSet, string spriteKeySet, Vector2 startPos) : base(gocSet, spriteKeySet, startPos)
         {
-            rendLayer = 3;
+            rendLayer = 4;
         }
 
 
@@ -244,6 +244,7 @@ namespace Tenta_Spel
             {
                 if (go.T == typeof(Bullet))
                 {
+                    explode = true;
                     go.markForDelete = true;
                 }
             }
@@ -258,11 +259,19 @@ namespace Tenta_Spel
 
         public Planet(GameObjectController gocSet, string spriteKeySet, Vector2 startPos) : base(gocSet, spriteKeySet, startPos)
         {
+            rendLayer = 4;
             Random r = new Random();
             planetColor = new Color(r.Next(255), r.Next(255), r.Next(255));
             scale = 1 + float.Parse((r.NextDouble() * 5).ToString());
 
-            rendLayer = 5;
+            int minerals = r.Next(3, 3);
+            for (int i = 0; i < minerals; i++)
+            {
+                WorldItem wi = new WorldItem(goc, "Mineral0", pos + 
+                    new Vector2(r.Next(Convert.ToInt32(-Raduis().X), Convert.ToInt32(Raduis().X)), r.Next(Convert.ToInt32(-Raduis().X), Convert.ToInt32(Raduis().X))));
+
+                Console.WriteLine("("+wi.pos.X/100+";"+wi.pos.Y/100+")");
+            }
         }
 
         public override void ForceMove()
@@ -287,19 +296,18 @@ namespace Tenta_Spel
         public Explosion(GameObjectController gocSet, string spriteKeySet, Vector2 startPos, float radiusSet) : base(gocSet, spriteKeySet, startPos)
         {
             rendLayer = 3;
-            radius = radiusSet/Raduis().X;
+            radius = 2 * (radiusSet/Raduis().X);
         }
 
         float Scale(float x)
         {
-            
-            float t = 0.001f;
+            float t = 0.1f;
             float k = (float) Math.Sqrt(t);
-               
+
+            rotation += new Random().Next(-1, 2) * t;
+
             x = Math.Max(0, x);
             float y = Math.Max(0, -t*(x * x) + 2 * k * x + 1);
-
-            Console.WriteLine("("+x+";"+y+")");
 
             if(y <= 0)
             {
@@ -313,7 +321,7 @@ namespace Tenta_Spel
         {
             //base.Collision();
 
-            foreach(GameObject go in goc.gos)
+            foreach(GameObject go in CollisionObjects())
             {
                 if (go.T == typeof(Ship))
                 {
@@ -326,8 +334,36 @@ namespace Tenta_Spel
         public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             lifespan += 0.1f;
-
+            rotation += new Random().Next(-2, 3) * 0.05f;
             spriteBatch.Draw(sprite, pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), Scale(lifespan), SpriteEffects.None, 1);
+        }
+    }
+
+    class WorldItem : GameObject
+    {
+        public WorldItem(GameObjectController gocSet, string spriteKeySet, Vector2 startPos) : base(gocSet, spriteKeySet, startPos)
+        {
+            rendLayer = 2;
+            
+        }
+
+        public override void Collision()
+        {
+            foreach (GameObject go in CollisionObjects())
+            {
+                if (go.T == typeof(Ship))
+                {
+                    if (go == goc.player)
+                    {
+                        markForDelete = true;
+                    }
+                }
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            spriteBatch.Draw(sprite, pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.Gold, rotation, Raduis(), 1f, SpriteEffects.None, 1);
         }
     }
 }

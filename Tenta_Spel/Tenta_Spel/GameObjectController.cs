@@ -196,7 +196,7 @@ namespace Tenta_Spel
         {
             for (int i = 0; i < 4; i++)
             {
-                spriteBatch.Draw(goc.textureList["BG1"], pos[i], null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
+                spriteBatch.Draw(goc.textureList["BG1"], pos[i], null, Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
             }
         }
     }

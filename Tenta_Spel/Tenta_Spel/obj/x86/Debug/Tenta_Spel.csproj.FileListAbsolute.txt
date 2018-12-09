@@ -28,3 +28,4 @@ C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Cont
 C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Utskrift\GameFont.xnb
 C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\Blank.xnb
 C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\Explosion0.xnb
+C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\Mineral0.xnb

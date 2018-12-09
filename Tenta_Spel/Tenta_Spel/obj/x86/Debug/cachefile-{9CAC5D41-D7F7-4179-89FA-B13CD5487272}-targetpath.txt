@@ -10,3 +10,4 @@ Content\Sound\Mars.wma
 Content\Utskrift\GameFont.xnb
 Content\Sprites\Blank.xnb
 Content\Sprites\Explosion0.xnb
+Content\Sprites\Mineral0.xnb

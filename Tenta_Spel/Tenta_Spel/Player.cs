@@ -23,13 +23,13 @@ namespace Tenta_Spel
             goc = gocSet;
             ship = new Ship(goc, "Ship0", new Vector2(0, 0));
             goc.player = ship;
-            ship.rendLayer = 0;
+            ship.rendLayer = 1;
         }
 
         public void Update(KeyboardState keyboardState)
         {
             Movement(keyboardState);
-            ship.rendLayer = 0;
+            ship.rendLayer = 1;
             ship.tickShootCooldown = Math.Min(ship.tickShootCooldown + 1, goc.player.shootCooldown);
         }
 
