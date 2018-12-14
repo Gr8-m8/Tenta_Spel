@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Tenta_Spel
 {
+    class Inventory
     {
         int slots = 10;
         int money = 0;
