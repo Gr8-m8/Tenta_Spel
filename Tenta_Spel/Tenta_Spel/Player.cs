@@ -13,8 +13,10 @@ namespace Tenta_Spel
 {
     class Player
     {
-        Ship ship;
+        public Ship ship;
         GameObjectController goc;
+
+        public Inventory inv = new Inventory();
 
         bool dead = false;
 
@@ -22,7 +24,7 @@ namespace Tenta_Spel
         {
             goc = gocSet;
             ship = new Ship(goc, "Ship0", new Vector2(0, 0));
-            goc.player = ship;
+            goc.player = this;
             ship.rendLayer = 1;
         }
 
@@ -30,7 +32,7 @@ namespace Tenta_Spel
         {
             Movement(keyboardState);
             ship.rendLayer = 1;
-            ship.tickShootCooldown = Math.Min(ship.tickShootCooldown + 1, goc.player.shootCooldown);
+            ship.tickShootCooldown = Math.Min(ship.tickShootCooldown + 1, goc.player.ship.shootCooldown);
         }
 
         public void Movement(KeyboardState keyboardState)
@@ -60,7 +62,7 @@ namespace Tenta_Spel
         {
             if (!dead)
             {
-                spriteBatch.Draw(goc.player.sprite, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, goc.player.rotation, goc.player.Raduis(), 1f, SpriteEffects.None, 0);
+                spriteBatch.Draw(goc.player.ship.sprite, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, goc.player.ship.rotation, goc.player.ship.Raduis(), 1f, SpriteEffects.None, 0);
             }
         }
     }

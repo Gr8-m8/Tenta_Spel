@@ -65,7 +65,7 @@ namespace Tenta_Spel
         public virtual void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
 
-            spriteBatch.Draw(sprite, pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), 1f, SpriteEffects.None, 1);
+            spriteBatch.Draw(sprite, pos - goc.player.ship.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), 1f, SpriteEffects.None, 1);
         }
 
         public virtual void Collision()
@@ -186,7 +186,7 @@ namespace Tenta_Spel
                 explode = true;
                 markForDelete = true;
 
-                if (this == goc.player)
+                if (this == goc.player.ship)
                 {
                     rendLayer = 9;
                 }
@@ -222,7 +222,7 @@ namespace Tenta_Spel
 
             pos += velocity;
 
-            float range = (float)Math.Sqrt((pos.X - goc.player.pos.X) * (pos.X - goc.player.pos.X) + (pos.Y - goc.player.pos.Y) * (pos.Y - goc.player.pos.Y));
+            float range = (float)Math.Sqrt((pos.X - goc.player.ship.pos.X) * (pos.X - goc.player.ship.pos.X) + (pos.Y - goc.player.ship.pos.Y) * (pos.Y - goc.player.ship.pos.Y));
             int maxRange = 2000;
             if (range > maxRange || range < -maxRange)
             {
@@ -244,8 +244,25 @@ namespace Tenta_Spel
             {
                 if (go.T == typeof(Bullet))
                 {
+                    if (this.sprite == goc.GetTexture("Asteroid0"))
+                    {
+                        //new WorldItem(goc, "Mineral0", this.pos);
+                    }
+
                     explode = true;
                     go.markForDelete = true;
+
+                }
+
+                if (go.T == typeof(Ship))
+                {
+                    if (this.sprite == goc.GetTexture("Asteroid0"))
+                    {
+                        //new WorldItem(goc, "Mineral0", this.pos);
+                    }
+
+                    explode = true;
+                    markForDelete = true;
                 }
             }
         }
@@ -270,7 +287,6 @@ namespace Tenta_Spel
                 WorldItem wi = new WorldItem(goc, "Mineral0", pos + 
                     new Vector2(r.Next(Convert.ToInt32(-Raduis().X), Convert.ToInt32(Raduis().X)), r.Next(Convert.ToInt32(-Raduis().X), Convert.ToInt32(Raduis().X))));
 
-                Console.WriteLine("("+wi.pos.X/100+";"+wi.pos.Y/100+")");
             }
         }
 
@@ -282,7 +298,7 @@ namespace Tenta_Spel
 
         public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
-            spriteBatch.Draw(sprite, pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, planetColor, rotation, Raduis(), scale, SpriteEffects.None, 1);
+            spriteBatch.Draw(sprite, pos - goc.player.ship.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, planetColor, rotation, Raduis(), scale, SpriteEffects.None, 1);
         }
     }
 
@@ -296,7 +312,7 @@ namespace Tenta_Spel
         public Explosion(GameObjectController gocSet, string spriteKeySet, Vector2 startPos, float radiusSet) : base(gocSet, spriteKeySet, startPos)
         {
             rendLayer = 3;
-            radius = 2 * (radiusSet/Raduis().X);
+            radius = (radiusSet/Raduis().X) * 1.25f;
         }
 
         float Scale(float x)
@@ -335,12 +351,14 @@ namespace Tenta_Spel
         {
             lifespan += 0.1f;
             rotation += new Random().Next(-2, 3) * 0.05f;
-            spriteBatch.Draw(sprite, pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), Scale(lifespan), SpriteEffects.None, 1);
+            spriteBatch.Draw(sprite, pos - goc.player.ship.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), Scale(lifespan), SpriteEffects.None, 1);
         }
     }
 
     class WorldItem : GameObject
     {
+        Item itm = new Item("", 3);
+
         public WorldItem(GameObjectController gocSet, string spriteKeySet, Vector2 startPos) : base(gocSet, spriteKeySet, startPos)
         {
             rendLayer = 2;
@@ -353,8 +371,9 @@ namespace Tenta_Spel
             {
                 if (go.T == typeof(Ship))
                 {
-                    if (go == goc.player)
+                    if (go == goc.player.ship)
                     {
+                        goc.player.inv.AddItem(new Mineral("", 0));
                         markForDelete = true;
                     }
                 }
@@ -363,7 +382,7 @@ namespace Tenta_Spel
 
         public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
-            spriteBatch.Draw(sprite, pos - goc.player.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.Gold, rotation, Raduis(), 1f, SpriteEffects.None, 1);
+            spriteBatch.Draw(sprite, pos - goc.player.ship.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.Gold, rotation, Raduis(), 1f, SpriteEffects.None, 1);
         }
     }
 }

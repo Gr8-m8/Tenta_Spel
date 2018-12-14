@@ -22,6 +22,8 @@ namespace Tenta_Spel
         Player player;
         UIManager uim;// = new UIManager();
 
+        bool zoomKey = false;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -50,15 +52,10 @@ namespace Tenta_Spel
             }
             uim = new UIManager(goc);
             goc.Activate();
-
             player = new Player(goc);
-            new Ship(goc,"Ship1", new Vector2(0, 5));
-            new Planet(goc, "Planet0", new Vector2(0, 0));
-            new Explosion(goc, "Explosion0", new Vector2(0, 0), 100);
+
 
             MediaPlayer.Play(Content.Load<Song>("Sound/Mars"));
-
-            UIContainer statusbar = new UIContainer(uim, new Vector2(0, graphics.PreferredBackBufferHeight/90), new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight/10), Color.Black ,2);
 
             //WINDOWINPUTSCALE
             wm.WindowScaleSet(0.6f);
@@ -77,16 +74,37 @@ namespace Tenta_Spel
                 this.Exit();
             }
 
+            
             if (keyboardState.IsKeyDown(Keys.OemPlus))
             {
-                wm.WindowScaleScale(0.1f);
-                wm.WindowScale(GraphicsDevice);
+                if (!zoomKey)
+                {
+                    wm.WindowScaleScale(0.1f);
+                    wm.WindowScale(GraphicsDevice);
+                    zoomKey = true;
+                }
+                
+            }
+
+            if (keyboardState.IsKeyDown(Keys.OemPlus))
+            {
+                zoomKey = false;
             }
 
             if (keyboardState.IsKeyDown(Keys.OemMinus))
             {
-                wm.WindowScaleScale(-0.1f);
-                wm.WindowScale(GraphicsDevice);
+                if (!zoomKey)
+                {
+                    wm.WindowScaleScale(-0.1f);
+                    wm.WindowScale(GraphicsDevice);
+                    zoomKey = true;
+                }
+                
+            }
+
+            if (keyboardState.IsKeyUp(Keys.OemMinus))
+            {
+                zoomKey = false;
             }
 
             if (keyboardState.IsKeyDown(Keys.Q))
@@ -139,13 +157,15 @@ namespace Tenta_Spel
 
             //UI
 
+            goc.player.inv.Draw(spriteBatch, graphics, gamefont);
+
             foreach (UIContainer uc in uim.uiCs)
             {
                 //uc.Draw(spriteBatch, graphics);
             }
 
             new UIContainer(uim, new Vector2(0, graphics.PreferredBackBufferHeight - 30), new Vector2(graphics.PreferredBackBufferWidth, 30), Color.Red, 2).Draw(spriteBatch,graphics);
-            spriteBatch.DrawString(gamefont, (new Vector2(Convert.ToInt32(goc.player.pos.X / 100), Convert.ToInt32(goc.player.pos.Y / 100))).ToString(), new Vector2(2, 2), Color.Yellow);
+            spriteBatch.DrawString(gamefont, (new Vector2(Convert.ToInt32(goc.player.ship.pos.X / 100), Convert.ToInt32(goc.player.ship.pos.Y / 100))).ToString(), new Vector2(2, 2), Color.Yellow);
 
 
             spriteBatch.End();

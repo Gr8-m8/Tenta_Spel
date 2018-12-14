@@ -19,7 +19,7 @@ namespace Tenta_Spel
         //public List<Ship> ships = new List<Ship>();
         //public List<Planet> planets = new List<Planet>();
         //public List<Bullet> bullets = new List<Bullet>();
-        public Ship player;
+        public Player player;
 
         public Dictionary<string, Texture2D> textureList = new Dictionary<string, Texture2D>();
 
@@ -34,6 +34,9 @@ namespace Tenta_Spel
         {
             bm = new BackgroundManager(this);
 
+            new Ship(this, "Ship1", new Vector2(0, 5));
+            new Planet(this, "Planet0", new Vector2(0, 0));
+            //new Explosion(this, "Explosion0", new Vector2(0, 0), 100);
         }
 
         public Texture2D GetTexture(string skey)
@@ -90,23 +93,23 @@ namespace Tenta_Spel
                 switch (r.Next(4))
                 {
                     case 0:
-                        spawnPos = new Vector2(this.player.pos.X + graphics.PreferredBackBufferHeight, this.player.pos.Y + r.Next(-graphics.PreferredBackBufferHeight / 2, graphics.PreferredBackBufferHeight / 2));
+                        spawnPos = new Vector2(this.player.ship.pos.X + graphics.PreferredBackBufferHeight, this.player.ship.pos.Y + r.Next(-graphics.PreferredBackBufferHeight / 2, graphics.PreferredBackBufferHeight / 2));
                         break;
 
                     case 1:
-                        spawnPos = new Vector2(this.player.pos.X - graphics.PreferredBackBufferHeight, this.player.pos.Y + r.Next(-graphics.PreferredBackBufferHeight / 2, graphics.PreferredBackBufferHeight / 2));
+                        spawnPos = new Vector2(this.player.ship.pos.X - graphics.PreferredBackBufferHeight, this.player.ship.pos.Y + r.Next(-graphics.PreferredBackBufferHeight / 2, graphics.PreferredBackBufferHeight / 2));
                         break;
 
                     case 2:
-                        spawnPos = new Vector2(this.player.pos.X + r.Next(-graphics.PreferredBackBufferHeight / 2, graphics.PreferredBackBufferHeight / 2), this.player.pos.Y + graphics.PreferredBackBufferWidth);
+                        spawnPos = new Vector2(this.player.ship.pos.X + r.Next(-graphics.PreferredBackBufferHeight / 2, graphics.PreferredBackBufferHeight / 2), this.player.ship.pos.Y + graphics.PreferredBackBufferWidth);
                         break;
 
                     case 3:
-                        spawnPos = new Vector2(this.player.pos.X + r.Next(-graphics.PreferredBackBufferHeight / 2, graphics.PreferredBackBufferHeight / 2), this.player.pos.Y - graphics.PreferredBackBufferWidth);
+                        spawnPos = new Vector2(this.player.ship.pos.X + r.Next(-graphics.PreferredBackBufferHeight / 2, graphics.PreferredBackBufferHeight / 2), this.player.ship.pos.Y - graphics.PreferredBackBufferWidth);
                         break;
                 }
 
-                Bullet cmt = new Bullet(this, "Asteroid0", spawnPos, (this.player.pos - spawnPos) * 0.004f, 34, 0);
+                Bullet cmt = new Bullet(this, "Asteroid0", spawnPos, (this.player.ship.pos - spawnPos) * 0.004f, 34, 0);
                 //Bullet cmt = new Bullet(this, "Asteroid0", spawnPos, new Vector2(Convert.ToInt32(r.Next(-1, 1)),Convert.ToInt32(r.Next(-1, 1))) * 3, 34, 0);
             }
         }
@@ -117,7 +120,7 @@ namespace Tenta_Spel
             int randomPlanetChance = 10000;
             if (r.Next(randomPlanetChance) > randomPlanetChance - 10)
             {
-                Vector2 spawnPos = this.player.pos + this.player.Forward() * 5000;
+                Vector2 spawnPos = this.player.ship.pos + this.player.ship.Forward() * 5000;
                 foreach (GameObject go in this.gos)
                 {
                     if (go.T == typeof(Planet))
@@ -178,7 +181,7 @@ namespace Tenta_Spel
         public void Move()
         {
 
-            pos[0] = goc.player.pos * -speed;
+            pos[0] = goc.player.ship.pos * -speed;
             pos[0].X %= dim.X;
             pos[0].X -= dim.X;
             pos[0].X %= dim.X;
