@@ -18,11 +18,10 @@ namespace Tenta_Spel
         SpriteFont gamefont;
 
         WindowManager wm;
-        GameObjectController goc = new GameObjectController();
-        Player player;
-        UIManager uim;// = new UIManager();
+        GameObjectController goc;
+        UIManager uim;
 
-        bool zoomKey = false;
+        string menuMessage = "THE EDGE OF THE UNIVERSE";
 
         public Game1()
         {
@@ -36,32 +35,20 @@ namespace Tenta_Spel
         }
         protected override void LoadContent()
         {
-
-            this.IsMouseVisible = true;
-
             wm = new WindowManager(graphics);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             gamefont = Content.Load<SpriteFont>("Utskrift/GameFont");
-            
-            string imgPath = @"..\..\..\..\Tenta_SpelContent\Sprites\";
 
-            for (int i = 0; i < System.IO.Directory.GetFiles(imgPath).Length; i++)
-            {
-                string tempPath = System.IO.Directory.GetFiles(imgPath)[i];
-                Texture2D tempTexture = Texture2D.FromStream(GraphicsDevice, new System.IO.FileStream(tempPath, System.IO.FileMode.Open));
-                goc.textureList.Add(System.IO.Directory.GetFiles(imgPath)[i].Substring(tempPath.LastIndexOf('\\') + 1).Split('.')[0], tempTexture);
-            }
+            goc = new GameObjectController(GraphicsDevice);
             uim = new UIManager(goc);
-
-            //goc.Activate();
-            player = new Player(goc);
-
-
-            //MediaPlayer.Play(Content.Load<Song>("Sound/Mars"));
 
             //WINDOWINPUTSCALE
             wm.WindowScaleSet(1f);
             wm.WindowScale(GraphicsDevice);
+
+            //MediaPlayer.Play(Content.Load<Song>("Sound/Mars"));
+
+            IsMouseVisible = true;
         }
         protected override void UnloadContent()
         {
@@ -78,33 +65,14 @@ namespace Tenta_Spel
             
             if (keyboardState.IsKeyDown(Keys.OemPlus))
             {
-                if (!zoomKey)
-                {
-                    wm.WindowScaleScale(0.1f);
-                    wm.WindowScale(GraphicsDevice);
-                    zoomKey = true;
-                }
-            }
-
-            if (keyboardState.IsKeyUp(Keys.OemPlus))
-            {
-                zoomKey = false;
+                wm.WindowScaleScale(0.1f);
+                wm.WindowScale(GraphicsDevice);
             }
 
             if (keyboardState.IsKeyDown(Keys.OemMinus))
             {
-                if (!zoomKey)
-                {
-                    wm.WindowScaleScale(-0.1f);
-                    wm.WindowScale(GraphicsDevice);
-                    zoomKey = true;
-                }
-                
-            }
-
-            if (keyboardState.IsKeyUp(Keys.OemMinus))
-            {
-                zoomKey = false;
+                wm.WindowScaleScale(-0.1f);
+                wm.WindowScale(GraphicsDevice);
             }
 
             if (keyboardState.IsKeyDown(Keys.Enter))
@@ -112,7 +80,7 @@ namespace Tenta_Spel
                 if (!goc.gocActivate)
                 {
                     goc.Activate();
-                    this.IsMouseVisible = false;
+                    IsMouseVisible = false;
                 }
             }
 
@@ -121,19 +89,22 @@ namespace Tenta_Spel
             if (goc.gocActivate)
             {
                 goc.Update(graphics);
-                player.Update(keyboardState);
+                goc.player.Update(keyboardState);
+
+                if (goc.player.Win() || goc.player.Loose())
+                {
+                    goc.DeActivate();
+                    IsMouseVisible = true;
+                }
             }
 
 
             base.Update(gameTime);
         }
 
-
         protected override void Draw(GameTime gameTime)
         {
-            
             GraphicsDevice.Clear(Color.White);
-
             spriteBatch.Begin();
 
             if (goc.gocActivate)
@@ -188,7 +159,7 @@ namespace Tenta_Spel
                 int i = 0;
                 new UIBlock(statusbar, statusbar.rendObj.pos + new Vector2(5*(i+1) + 200*i, 5), new Vector2(200, 20), Color.Red);
                 new UIBlock(statusbar, statusbar.rendObj.pos + new Vector2(5*(i+1) + 200*i, 5), new Vector2(200 * (goc.player.fuel/7000f), 20), Color.Green);
-                new UIText(statusbar, statusbar.rendObj.pos + new Vector2(5*(i+1) + 200*i, 5), new Vector2(200, 20), Color.Yellow, gamefont, goc.player.fuel/10 + "/7000 fuel");
+                new UIText(statusbar, statusbar.rendObj.pos + new Vector2(5*(i+1) + 200*i, 5), new Vector2(200, 20), Color.Yellow, gamefont, goc.player.fuel/10 + "/700 fuel");
                 i++;
                 new UIBlock(statusbar, statusbar.rendObj.pos + new Vector2(5 * (i + 1) + 200 * i, 5), new Vector2(200, 20), Color.Red);
                 new UIBlock(statusbar, statusbar.rendObj.pos + new Vector2(5 * (i + 1) + 200 * i, 5), new Vector2(200 * goc.player.ship.hp/100, 20), Color.Green);
@@ -201,17 +172,22 @@ namespace Tenta_Spel
                 statusbar.Draw(spriteBatch, graphics);
 
                 spriteBatch.DrawString(gamefont, (new Vector2(Convert.ToInt32(goc.player.ship.pos.X / 100), Convert.ToInt32(goc.player.ship.pos.Y / 100))).ToString(), new Vector2(2, 2), Color.Yellow);
+
             }
 
             if (!goc.gocActivate)
             {
-                UIContainer startmenu = new UIContainer(uim, new Vector2(400, 200), new Vector2(graphics.PreferredBackBufferWidth - 400*2, graphics.PreferredBackBufferHeight - 600), Color.Gray, 5);
-                UIButton startButton = new UIButton(startmenu, new Vector2(500, 250), new Vector2(graphics.PreferredBackBufferWidth - 800 -200, graphics.PreferredBackBufferHeight - 600-100), Color.DarkSlateBlue);
-                new UIText(startmenu, startButton.pos + startButton.size/3, startButton.size, new Color(-startButton.clr.R, -startButton.clr.G, -startButton.clr.B), gamefont, "START");
+                
+                UIContainer startmenu = new UIContainer(uim, new Vector2(400, 200), new Vector2(graphics.PreferredBackBufferWidth - 400*2, graphics.PreferredBackBufferHeight - 400), Color.Gray, 5);
+                UIButton startButton = new UIButton(startmenu, new Vector2(500, 450), new Vector2(graphics.PreferredBackBufferWidth - 800 -200, graphics.PreferredBackBufferHeight - 600-100), Color.DarkSlateBlue);
+                new UIText(startmenu, startButton.pos + startButton.size/2, startButton.size, new Color(-startButton.clr.R, -startButton.clr.G, -startButton.clr.B), gamefont, "START");
+
+                new UIText(startmenu, new Vector2(500, 250), startButton.size, Color.Red, gamefont, menuMessage);
 
                 if (startButton.ButtonPressed())
                 {
                     goc.Activate();
+                    IsMouseVisible = false;
                 }
 
                 startmenu.Draw(spriteBatch, graphics);

@@ -29,7 +29,7 @@ namespace Tenta_Spel
 
         public Vector2 velocity;
         float fullThrust = 0.6f;
-        float friction = 0.99f;
+        float friction = 0.995f;
         bool isGravity = false;
 
         public bool markForDelete = false;
@@ -276,16 +276,17 @@ namespace Tenta_Spel
     {
         public Color planetColor;
         public float scale;
+
+        static Random r = new Random();
         //float rotationSpeed = 0.0002f - new Random().Next(1);
 
         public Planet(GameObjectController gocSet, string spriteKeySet, Vector2 startPos) : base(gocSet, spriteKeySet, startPos)
         {
             rendLayer = 4;
-            Random r = new Random();
             planetColor = new Color(r.Next(255), r.Next(255), r.Next(255));
             scale = 1 + float.Parse((r.NextDouble() * 5).ToString());
 
-            int minerals = r.Next(3, 3);
+            int minerals = r.Next(3, 8);
             for (int i = 0; i < minerals; i++)
             {
                 WorldItem wi = new WorldItem(goc, "Mineral0", pos + 
@@ -313,6 +314,8 @@ namespace Tenta_Spel
 
         float radius;
 
+        static Random r = new Random();
+
         public Explosion(GameObjectController gocSet, string spriteKeySet, Vector2 startPos, float radiusSet) : base(gocSet, spriteKeySet, startPos)
         {
             rendLayer = 3;
@@ -324,7 +327,7 @@ namespace Tenta_Spel
             float t = 0.1f;
             float k = (float) Math.Sqrt(t);
 
-            rotation += new Random().Next(-1, 2) * t;
+            rotation += r.Next(-1, 2) * t;
 
             x = Math.Max(0, x);
             float y = Math.Max(0, -t*(x * x) + 2 * k * x + 1);
@@ -354,7 +357,7 @@ namespace Tenta_Spel
         public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             lifespan += 0.1f;
-            rotation += new Random().Next(-2, 3) * 0.05f;
+            rotation += r.Next(-2, 3) * 0.05f;
             spriteBatch.Draw(sprite, pos - goc.player.ship.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), Scale(lifespan), SpriteEffects.None, 1);
         }
     }

@@ -21,13 +21,12 @@ namespace Tenta_Spel
         public Inventory inv = new Inventory();
 
         bool dead = false;
-        public int winDistance = 100 * 10000;
+        public int winDistance = 100 * 5000;
 
         public Player(GameObjectController gocSet)
         {
             goc = gocSet;
             ship = new Ship(goc, "Ship0", new Vector2(0, 0));
-            goc.player = this;
             ship.rendLayer = 1;
         }
 
@@ -36,17 +35,30 @@ namespace Tenta_Spel
             Movement(keyboardState);
             ship.rendLayer = 1;
             ship.tickShootCooldown = Math.Min(ship.tickShootCooldown + 1, goc.player.ship.shootCooldown);
-
-            Win();
         }
 
-        public void Win()
+        public bool Win()
         {
             if (ship.pos.X > winDistance || ship.pos.Y > winDistance || ship.pos.X < -winDistance || ship.pos.Y < -winDistance)
             {
-                goc.gocActivate = false;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Loose()
+        {
+            if (goc.player.ship.hp <= 0)
+            {
+                return true;
             }
 
+            if (fuel == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void Movement(KeyboardState keyboardState)
@@ -101,7 +113,7 @@ namespace Tenta_Spel
                         {
                             inv.RemoveItem(new Item("Uranium", 1));
                             inv.RemoveItem(new Item("Aluminium", 2));
-                            fuel = Math.Min(5000, fuel + 200);
+                            fuel = Math.Min(5000, fuel + 1000);
                         }
                     }
                 }

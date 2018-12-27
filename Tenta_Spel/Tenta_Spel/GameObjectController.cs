@@ -17,17 +17,23 @@ namespace Tenta_Spel
         public BackgroundManager bm;
 
         public List<GameObject> gos = new List<GameObject>();
-        //public List<Ship> ships = new List<Ship>();
-        //public List<Planet> planets = new List<Planet>();
-        //public List<Bullet> bullets = new List<Bullet>();
         public Player player;
 
         public Dictionary<string, Texture2D> textureList = new Dictionary<string, Texture2D>();
 
         public Vector2 cameraPos = new Vector2(25, 25);
 
-        public GameObjectController()
+        public GameObjectController(GraphicsDevice graphicsDevice)
         {
+            string imgPath = @"..\..\..\..\Tenta_SpelContent\Sprites\";
+            //Dictionary<string, Texture2D> textureListTemp = new Dictionary<string, Texture2D>();
+
+            for (int i = 0; i < System.IO.Directory.GetFiles(imgPath).Length; i++)
+            {
+                string tempPath = System.IO.Directory.GetFiles(imgPath)[i];
+                Texture2D tempTexture = Texture2D.FromStream(graphicsDevice, new System.IO.FileStream(tempPath, System.IO.FileMode.Open));
+                textureList.Add(System.IO.Directory.GetFiles(imgPath)[i].Substring(tempPath.LastIndexOf('\\') + 1).Split('.')[0], tempTexture);
+            }
 
         }
 
@@ -36,8 +42,17 @@ namespace Tenta_Spel
             gocActivate = true;
             bm = new BackgroundManager(this);
 
-            new Ship(this, "Ship1", new Vector2(0, 5));
+            player = new Player(this);
+
+            //new Ship(this, "Ship1", new Vector2(0, 5));
             new Planet(this, "Planet0", new Vector2(0, 0));
+        }
+
+        public void DeActivate()
+        {
+            gocActivate = false;
+            gos = new List<GameObject>();
+
         }
 
         public Texture2D GetTexture(string skey)

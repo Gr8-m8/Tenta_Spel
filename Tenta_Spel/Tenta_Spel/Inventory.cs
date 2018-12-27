@@ -126,6 +126,7 @@ namespace Tenta_Spel
             i++;
 
             //inv
+            i++;
             foreach (KeyValuePair<string, Item> itm in content)
             {
                 spriteBatch.DrawString(gamefont, itm.Key + " : " + itm.Value.quantity, new Vector2(0, 2 * 18 + 18 * i), Color.Yellow);
@@ -149,12 +150,14 @@ namespace Tenta_Spel
 
     class Mineral : Item
     {
-        string[] minerals = new string[6] { "Crystal", "Iron", "Aluminium", "Uranium", "Mineral Stone", "Titanium" };
+        static Random r = new Random();
+
+        static string[] minerals = new string[6] { "Crystal", "Iron", "Uranium", "Aluminium", "Mineral Stone", "Titanium" };
 
         public Mineral(string nameSet, int quantitySet = 1) : base(nameSet, quantitySet)
         {
-            name = minerals[new Random().Next(minerals.Length +1)];
-            quantity = new Random().Next(1, 3);
+            quantity = r.Next(1, 4);
+            name = minerals[r.Next(minerals.Length)];
         }
     }
 }
