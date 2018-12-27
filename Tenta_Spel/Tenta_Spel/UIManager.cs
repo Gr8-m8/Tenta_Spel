@@ -30,7 +30,7 @@ namespace Tenta_Spel
     {
         public UIManager uim;
 
-        UIElement rendObj;
+        public UIElement rendObj;
         public int borderSize = 2;
 
         public List<UIElement> uiElements = new List<UIElement>();
@@ -90,7 +90,9 @@ namespace Tenta_Spel
             clr = colorSet;
 
             T = this.GetType();
+
             uic = uicSet;
+            uic.uiElements.Add(this);
 
             texture = uic.uim.block;
         }
@@ -130,6 +132,39 @@ namespace Tenta_Spel
         public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             spriteBatch.DrawString(font, text, pos, clr);
+        }
+    }
+
+    class UIButton : UIElement
+    {
+        Color baseColor;
+        Color pressedColor;
+        Color hoverColor;
+
+        public UIButton(UIContainer uic, Vector2 posSet, Vector2 sizeSet, Color colorSet) : base(uic, posSet, sizeSet, colorSet)
+        {
+            baseColor = colorSet;
+            hoverColor = new Color(Convert.ToInt32(colorSet.R * 0.66), Convert.ToInt32(colorSet.R * 0.66), Convert.ToInt32(colorSet.R * 0.66));
+            pressedColor = new Color(Convert.ToInt32(colorSet.R * 0.33), Convert.ToInt32(colorSet.R * 0.33), Convert.ToInt32(colorSet.R * 0.33));
+
+        }
+
+        public bool ButtonPressed()
+        {
+            MouseState ms = Mouse.GetState();
+
+            clr = baseColor;
+            if (ms.X > pos.X && ms.Y > pos.Y && ms.X < pos.X + size.X && ms.Y < pos.Y + size.Y)
+            {
+                clr = hoverColor;
+                if (ms.LeftButton == ButtonState.Pressed)
+                {
+                    clr = pressedColor;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

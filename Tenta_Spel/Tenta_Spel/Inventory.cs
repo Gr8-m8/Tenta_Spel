@@ -110,10 +110,25 @@ namespace Tenta_Spel
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, SpriteFont gamefont)
         {
+
+            //Rec
             int i = 0;
+            spriteBatch.DrawString(gamefont, "[F] +Fuel (Uranium {1}, Aluminium {2})", new Vector2(0, 2 * 18 + 18 * i), Color.Beige);
+            i++;
+
+            spriteBatch.DrawString(gamefont, "[R] +Ammunition (Crystal {2}, Iron {1})", new Vector2(0, 2 * 18 + 18 * i), Color.Beige);
+            i++;
+
+            spriteBatch.DrawString(gamefont, "[J] +Health (Iron {2}, Titanium {1})", new Vector2(0, 2 * 18 + 18 * i), Color.Beige);
+            i++;
+
+            spriteBatch.DrawString(gamefont, "[L] +Mineral (Mineral Stone {3})", new Vector2(0, 2 * 18 + 18 * i), Color.Beige);
+            i++;
+
+            //inv
             foreach (KeyValuePair<string, Item> itm in content)
             {
-                spriteBatch.DrawString(gamefont, itm.Key + " : " + itm.Value.quantity, new Vector2(graphics.PreferredBackBufferWidth / 4, 100 + 18 * i), Color.Yellow);
+                spriteBatch.DrawString(gamefont, itm.Key + " : " + itm.Value.quantity, new Vector2(0, 2 * 18 + 18 * i), Color.Yellow);
                 i++;
             }
         }
@@ -134,11 +149,11 @@ namespace Tenta_Spel
 
     class Mineral : Item
     {
-        string[] minerals = new string[5] { "Coal", "Iron", "Aluminium", "Uranium", "Stone" };
+        string[] minerals = new string[6] { "Crystal", "Iron", "Aluminium", "Uranium", "Mineral Stone", "Titanium" };
 
         public Mineral(string nameSet, int quantitySet = 1) : base(nameSet, quantitySet)
         {
-            name = minerals[new Random().Next(5)];
+            name = minerals[new Random().Next(minerals.Length +1)];
             quantity = new Random().Next(1, 3);
         }
     }

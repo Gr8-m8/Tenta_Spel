@@ -134,7 +134,7 @@ namespace Tenta_Spel
             rendLayer = 4;
         }
 
-
+        public int bulletCount = 100;
         public int shootCooldown = 20;
         public int tickShootCooldown = 0;
 
@@ -142,11 +142,16 @@ namespace Tenta_Spel
         {
             if (hp > 0)
             {
-                if (tickShootCooldown >= shootCooldown)
+                if (bulletCount > 0)
                 {
-                    tickShootCooldown = 0;
-                    Vector2 canonPos = pos + Forward() * Raduis();
-                    bullets.Add(new Bullet(goc, "Bullet", canonPos, velocity + Forward() * speed, dmg, 200));
+                    if (tickShootCooldown >= shootCooldown)
+                    {
+                        tickShootCooldown = 0;
+                        Vector2 canonPos = pos + Forward() * Raduis();
+
+                        bulletCount--;
+                        bullets.Add(new Bullet(goc, "Bullet", canonPos, velocity + Forward() * speed, dmg, 200));
+                    }
                 }
             }
         }
@@ -167,14 +172,14 @@ namespace Tenta_Spel
                     if (!bullets.Contains(blt))
                     {
                         HeathManager(blt.dmg);
-                        explode = true;
+                        go.explode = true;
                         go.markForDelete = true;
                     }
                 }
             }
         }
 
-        int hp = 100;
+        public int hp = 100;
         public void HeathManager(int amount)
         {
             Console.WriteLine(hp + " | " + amount);
@@ -182,7 +187,6 @@ namespace Tenta_Spel
 
             if (hp < 1)
             {
-                Console.WriteLine(this + " died!");
                 explode = true;
                 markForDelete = true;
 
@@ -261,8 +265,8 @@ namespace Tenta_Spel
                         //new WorldItem(goc, "Mineral0", this.pos);
                     }
 
-                    explode = true;
-                    markForDelete = true;
+                    //explode = true;
+                    //markForDelete = true;
                 }
             }
         }

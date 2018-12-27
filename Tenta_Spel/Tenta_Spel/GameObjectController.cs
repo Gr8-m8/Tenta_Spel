@@ -13,6 +13,7 @@ namespace Tenta_Spel
 {
     class GameObjectController
     {
+        public bool gocActivate = false;
         public BackgroundManager bm;
 
         public List<GameObject> gos = new List<GameObject>();
@@ -32,11 +33,11 @@ namespace Tenta_Spel
 
         public void Activate()
         {
+            gocActivate = true;
             bm = new BackgroundManager(this);
 
             new Ship(this, "Ship1", new Vector2(0, 5));
             new Planet(this, "Planet0", new Vector2(0, 0));
-            //new Explosion(this, "Explosion0", new Vector2(0, 0), 100);
         }
 
         public Texture2D GetTexture(string skey)
@@ -118,27 +119,27 @@ namespace Tenta_Spel
         {
             Random r = new Random();
             int randomPlanetChance = 10000;
-            if (r.Next(randomPlanetChance) > randomPlanetChance - 10)
+            if (r.Next(randomPlanetChance) > randomPlanetChance - 6)
             {
-                Vector2 spawnPos = this.player.ship.pos + this.player.ship.Forward() * 5000;
+                int lng = 5000;
+                Vector2 spawnPos = this.player.ship.pos + this.player.ship.Forward() * lng;
                 foreach (GameObject go in this.gos)
                 {
                     if (go.T == typeof(Planet))
                     {
                         float dist = (float)Math.Sqrt((go.pos.X - spawnPos.X) * (go.pos.X - spawnPos.X) + (go.pos.Y - spawnPos.Y) * (go.pos.Y - spawnPos.Y));
 
-                        if (dist < 1000)
+                        if (dist < lng)
                         {
-                            return 1;
+                            return 0;
                         }
                     }
                 }
 
                 Planet plnt = new Planet(this, "Planet0", spawnPos);
-                //Console.WriteLine(spawnPos.X/100 + " " + spawnPos.Y/100);
-                return 0;
+                return 1;
             }
-            return -1;
+            return 0;
         }
     }
 
@@ -199,7 +200,7 @@ namespace Tenta_Spel
         {
             for (int i = 0; i < 4; i++)
             {
-                spriteBatch.Draw(goc.textureList["BG1"], pos[i], null, Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
+                spriteBatch.Draw(goc.textureList["BG1"], pos[i], null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
             }
         }
     }

@@ -36,7 +36,8 @@ namespace Tenta_Spel
         }
         protected override void LoadContent()
         {
-            
+
+            this.IsMouseVisible = true;
 
             wm = new WindowManager(graphics);
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -51,14 +52,15 @@ namespace Tenta_Spel
                 goc.textureList.Add(System.IO.Directory.GetFiles(imgPath)[i].Substring(tempPath.LastIndexOf('\\') + 1).Split('.')[0], tempTexture);
             }
             uim = new UIManager(goc);
-            goc.Activate();
+
+            //goc.Activate();
             player = new Player(goc);
 
 
-            MediaPlayer.Play(Content.Load<Song>("Sound/Mars"));
+            //MediaPlayer.Play(Content.Load<Song>("Sound/Mars"));
 
             //WINDOWINPUTSCALE
-            wm.WindowScaleSet(0.6f);
+            wm.WindowScaleSet(1f);
             wm.WindowScale(GraphicsDevice);
         }
         protected override void UnloadContent()
@@ -73,7 +75,6 @@ namespace Tenta_Spel
             {
                 this.Exit();
             }
-
             
             if (keyboardState.IsKeyDown(Keys.OemPlus))
             {
@@ -83,10 +84,9 @@ namespace Tenta_Spel
                     wm.WindowScale(GraphicsDevice);
                     zoomKey = true;
                 }
-                
             }
 
-            if (keyboardState.IsKeyDown(Keys.OemPlus))
+            if (keyboardState.IsKeyUp(Keys.OemPlus))
             {
                 zoomKey = false;
             }
@@ -107,25 +107,22 @@ namespace Tenta_Spel
                 zoomKey = false;
             }
 
-            if (keyboardState.IsKeyDown(Keys.Q))
+            if (keyboardState.IsKeyDown(Keys.Enter))
             {
-                foreach (GameObject go in goc.gos)
+                if (!goc.gocActivate)
                 {
-                    Console.Write(go.T + " | " + typeof(Bullet) + " |");
-                    if (go.T == typeof(Bullet))
-                    {
-                        Console.Write(" isTrue");
-                    }
-                    Console.WriteLine();
+                    goc.Activate();
+                    this.IsMouseVisible = false;
                 }
-                Console.WriteLine("--- --- ---");
-
             }
+
             //UPDATE
 
-            goc.Update(graphics);
-
-            player.Update(keyboardState);
+            if (goc.gocActivate)
+            {
+                goc.Update(graphics);
+                player.Update(keyboardState);
+            }
 
 
             base.Update(gameTime);
@@ -134,39 +131,92 @@ namespace Tenta_Spel
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            
+            GraphicsDevice.Clear(Color.White);
 
             spriteBatch.Begin();
 
-            for (int i = 0; i < 4; i++)
+            if (goc.gocActivate)
             {
-                goc.bm.Draw(spriteBatch);
-                //spriteBatch.Draw(goc.textureList["BG1"], goc.bm.pos[i], null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
-            }
-
-            for (int i = 6; i > 0; i--)
-            {
-                foreach (GameObject go in goc.gos)
+                for (int i = 0; i < 4; i++)
                 {
-                    if (Math.Floor((double)go.rendLayer) == i)
+                    goc.bm.Draw(spriteBatch);
+                }
+
+                for (int i = 6; i > 0; i--)
+                {
+                    foreach (GameObject go in goc.gos)
                     {
-                        go.Draw(spriteBatch, graphics);
+                        if (Math.Floor((double)go.rendLayer) == i)
+                        {
+                            go.Draw(spriteBatch, graphics);
+                        }
                     }
                 }
+
+                Vector2 winPos = goc.player.ship.pos;
+                if (winPos.X < 0)
+                {
+                    winPos.X *= -1;
+                }
+
+                if (winPos.Y < 0)
+                {
+                    winPos.Y *= -1;
+                }
+
+                int fade = 0;
+                int fadeDist = 100 * 10;
+                int playerGoalDist = goc.player.winDistance - Convert.ToInt32(Math.Max(winPos.X, winPos.Y));
+
+                if (playerGoalDist < fadeDist)
+                {
+                    fade = 255 - (int)(255f * (float)playerGoalDist / fadeDist);                    
+                }
+                Console.WriteLine();
+
+                new UIContainer(uim, new Vector2(0, 0), new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), new Color(fade, fade, fade, fade), 5).Draw(spriteBatch, graphics);
             }
 
             //UI
 
-            goc.player.inv.Draw(spriteBatch, graphics, gamefont);
-
-            foreach (UIContainer uc in uim.uiCs)
+            if (goc.gocActivate)
             {
-                //uc.Draw(spriteBatch, graphics);
+                goc.player.inv.Draw(spriteBatch, graphics, gamefont);
+
+                UIContainer statusbar = new UIContainer(uim, new Vector2(0, graphics.PreferredBackBufferHeight - 30), new Vector2(graphics.PreferredBackBufferWidth, 30), Color.Gray, 2);
+                int i = 0;
+                new UIBlock(statusbar, statusbar.rendObj.pos + new Vector2(5*(i+1) + 200*i, 5), new Vector2(200, 20), Color.Red);
+                new UIBlock(statusbar, statusbar.rendObj.pos + new Vector2(5*(i+1) + 200*i, 5), new Vector2(200 * (goc.player.fuel/7000f), 20), Color.Green);
+                new UIText(statusbar, statusbar.rendObj.pos + new Vector2(5*(i+1) + 200*i, 5), new Vector2(200, 20), Color.Yellow, gamefont, goc.player.fuel/10 + "/7000 fuel");
+                i++;
+                new UIBlock(statusbar, statusbar.rendObj.pos + new Vector2(5 * (i + 1) + 200 * i, 5), new Vector2(200, 20), Color.Red);
+                new UIBlock(statusbar, statusbar.rendObj.pos + new Vector2(5 * (i + 1) + 200 * i, 5), new Vector2(200 * goc.player.ship.hp/100, 20), Color.Green);
+                new UIText(statusbar, statusbar.rendObj.pos + new Vector2(5 * (i + 1) + 200 * i, 5), new Vector2(200, 20), Color.Yellow, gamefont, goc.player.ship.hp.ToString() + "/100 hp");
+                i++;
+                new UIBlock(statusbar, statusbar.rendObj.pos + new Vector2(5 * (i + 1) + 200 * i, 5), new Vector2(200, 20), Color.Red);
+                new UIBlock(statusbar, statusbar.rendObj.pos + new Vector2(5 * (i + 1) + 200 * i, 5), new Vector2(200 * goc.player.ship.bulletCount/100, 20), Color.Green);
+                new UIText(statusbar, statusbar.rendObj.pos + new Vector2(5 * (i + 1) + 200 * i, 5), new Vector2(200, 20), Color.Yellow, gamefont, goc.player.ship.bulletCount.ToString() + "/100 bullets");
+
+                statusbar.Draw(spriteBatch, graphics);
+
+                spriteBatch.DrawString(gamefont, (new Vector2(Convert.ToInt32(goc.player.ship.pos.X / 100), Convert.ToInt32(goc.player.ship.pos.Y / 100))).ToString(), new Vector2(2, 2), Color.Yellow);
             }
 
-            new UIContainer(uim, new Vector2(0, graphics.PreferredBackBufferHeight - 30), new Vector2(graphics.PreferredBackBufferWidth, 30), Color.Red, 2).Draw(spriteBatch,graphics);
-            spriteBatch.DrawString(gamefont, (new Vector2(Convert.ToInt32(goc.player.ship.pos.X / 100), Convert.ToInt32(goc.player.ship.pos.Y / 100))).ToString(), new Vector2(2, 2), Color.Yellow);
+            if (!goc.gocActivate)
+            {
+                UIContainer startmenu = new UIContainer(uim, new Vector2(400, 200), new Vector2(graphics.PreferredBackBufferWidth - 400*2, graphics.PreferredBackBufferHeight - 600), Color.Gray, 5);
+                UIButton startButton = new UIButton(startmenu, new Vector2(500, 250), new Vector2(graphics.PreferredBackBufferWidth - 800 -200, graphics.PreferredBackBufferHeight - 600-100), Color.DarkSlateBlue);
+                new UIText(startmenu, startButton.pos + startButton.size/3, startButton.size, new Color(-startButton.clr.R, -startButton.clr.G, -startButton.clr.B), gamefont, "START");
 
+                if (startButton.ButtonPressed())
+                {
+                    goc.Activate();
+                }
+
+                startmenu.Draw(spriteBatch, graphics);
+            }
+            
 
             spriteBatch.End();
             base.Draw(gameTime);
