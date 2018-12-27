@@ -58,7 +58,7 @@ namespace Tenta_Spel
 
         public void Movement(KeyboardState keyboardState)
         {
-            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+            if (keyboardState.IsKeyDown(Keys.W))
             {
                 if (fuel > 0)
                 {
@@ -67,12 +67,12 @@ namespace Tenta_Spel
                 }
             }
 
-            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+            if (keyboardState.IsKeyDown(Keys.D))
             {
                 ship.rotation += 0.1f;
             }
 
-            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
+            if (keyboardState.IsKeyDown(Keys.A))
             {
                 ship.rotation -= 0.1f;
             }

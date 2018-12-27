@@ -201,7 +201,49 @@ namespace Tenta_Spel
                     IsMouseVisible = false;
                 }
 
+                UIContainer helpMenu = new UIContainer(uim, new Vector2(0, 0), new Vector2(100, 20), Color.Transparent, 2);
+                new UIText(helpMenu, helpMenu.rendObj.pos, helpMenu.rendObj.size, Color.Gray, gamefont, "[H] Help");
+
+                if (Keyboard.GetState().IsKeyDown(Keys.H))
+                {
+                    int i = 2;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "[ESC] Exit Game");
+                    i++;
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Movement:");
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "[W] Forward");
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "[A][D] Rotate");
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "[K] Shoot");
+                    i++;
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Goal:");
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Reach the Edge of the Universe (at");
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "5000 possitive or negative on the x or y axsis)");
+                    i++;
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Obsticles:");
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Comets can strike from any direction");
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Limited Resources (Fuel, Health, Ammunition)");
+                    i++;
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Crafting");
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Gather Resources on planets to craft, and ");
+                    i++;
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "replenish your Vitality (Fuel, Health, Ammunition)");
+                    i++;
+
+                }
+
                 startmenu.Draw(spriteBatch, graphics);
+                helpMenu.Draw(spriteBatch, graphics);
             }
             
 
