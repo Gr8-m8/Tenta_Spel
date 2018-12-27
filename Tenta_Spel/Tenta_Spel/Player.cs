@@ -53,11 +53,6 @@ namespace Tenta_Spel
                 return true;
             }
 
-            if (fuel == 0)
-            {
-                return true;
-            }
-
             return false;
         }
 

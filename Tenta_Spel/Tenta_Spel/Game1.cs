@@ -21,7 +21,7 @@ namespace Tenta_Spel
         GameObjectController goc;
         UIManager uim;
 
-        string menuMessage = "THE EDGE OF THE UNIVERSE";
+        string menuMessage = "EDGE OF THE UNIVERSE";
 
         public Game1()
         {
@@ -93,6 +93,14 @@ namespace Tenta_Spel
 
                 if (goc.player.Win() || goc.player.Loose())
                 {
+                    if (goc.player.Win())
+                        menuMessage = "YOU WON!";
+
+                    if (goc.player.Loose())
+                    {
+                        menuMessage = "YOU LOOSE!";
+                    }
+
                     goc.DeActivate();
                     IsMouseVisible = true;
                 }
@@ -180,9 +188,12 @@ namespace Tenta_Spel
                 
                 UIContainer startmenu = new UIContainer(uim, new Vector2(400, 200), new Vector2(graphics.PreferredBackBufferWidth - 400*2, graphics.PreferredBackBufferHeight - 400), Color.Gray, 5);
                 UIButton startButton = new UIButton(startmenu, new Vector2(500, 450), new Vector2(graphics.PreferredBackBufferWidth - 800 -200, graphics.PreferredBackBufferHeight - 600-100), Color.DarkSlateBlue);
-                new UIText(startmenu, startButton.pos + startButton.size/2, startButton.size, new Color(-startButton.clr.R, -startButton.clr.G, -startButton.clr.B), gamefont, "START");
+                UIText startText = new UIText(startmenu, startButton.pos + new Vector2(startButton.size.X/2, startButton.size.Y/3), startButton.size, new Color(-startButton.clr.R, -startButton.clr.G, -startButton.clr.B), gamefont, "START");
+                
 
-                new UIText(startmenu, new Vector2(500, 250), startButton.size, Color.Red, gamefont, menuMessage);
+                UIText titleText = new UIText(startmenu, startText.pos + new Vector2(0, -200), startButton.size, Color.Red, gamefont, menuMessage);
+                titleText.pos.X -= (titleText.text.Length)*9/1.5f;
+                startText.pos.X -= (startText.text.Length-1)*9;
 
                 if (startButton.ButtonPressed())
                 {
