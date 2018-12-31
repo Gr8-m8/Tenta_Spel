@@ -146,7 +146,7 @@ namespace Tenta_Spel
 
                 int fade = 0;
                 int fadeDist = 100 * 10;
-                int playerGoalDist = goc.player.winDistance - Convert.ToInt32(Math.Max(winPos.X, winPos.Y));
+                int playerGoalDist = Player.winDistance - Convert.ToInt32(Math.Max(winPos.X, winPos.Y));
 
                 if (playerGoalDist < fadeDist)
                 {
@@ -224,7 +224,7 @@ namespace Tenta_Spel
                     i++;
                     new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Reach the Edge of the Universe (at");
                     i++;
-                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, 7000 + " possitive or negative on the x or y axsis)");
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, Player.winDistance/100 + " possitive or negative on the x or y axsis)");
                     i++;
                     i++;
                     new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Obsticles:");

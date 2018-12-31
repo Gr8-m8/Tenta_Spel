@@ -21,7 +21,7 @@ namespace Tenta_Spel
         public Inventory inv = new Inventory();
 
         bool dead = false;
-        public int winDistance = 100 * 5000;
+        public static int winDistance = 100 * 5000;
 
         public Player(GameObjectController gocSet)
         {
