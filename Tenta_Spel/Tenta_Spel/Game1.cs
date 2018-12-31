@@ -91,14 +91,14 @@ namespace Tenta_Spel
                 goc.Update(graphics);
                 goc.player.Update(keyboardState);
 
-                if (goc.player.Win() || goc.player.Loose())
+                if (goc.player.Win() || goc.player.Lose())
                 {
                     if (goc.player.Win())
                         menuMessage = "YOU WON!";
 
-                    if (goc.player.Loose())
+                    if (goc.player.Lose())
                     {
-                        menuMessage = "YOU LOOSE!";
+                        menuMessage = "YOU LOSE!";
                     }
 
                     goc.DeActivate();
@@ -201,7 +201,8 @@ namespace Tenta_Spel
                     IsMouseVisible = false;
                 }
 
-                UIContainer helpMenu = new UIContainer(uim, new Vector2(0, 0), new Vector2(100, 20), Color.Transparent, 2);
+                UIContainer helpMenu = new UIContainer(uim, new Vector2(10, 20*8), new Vector2(100, 25), new Color(0, 0, 0, 20), 2);
+                //new UIBlock(helpMenu)
                 new UIText(helpMenu, helpMenu.rendObj.pos, helpMenu.rendObj.size, Color.Gray, gamefont, "[H] Help");
 
                 if (Keyboard.GetState().IsKeyDown(Keys.H))
@@ -223,7 +224,7 @@ namespace Tenta_Spel
                     i++;
                     new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Reach the Edge of the Universe (at");
                     i++;
-                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "5000 possitive or negative on the x or y axsis)");
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, 7000 + " possitive or negative on the x or y axsis)");
                     i++;
                     i++;
                     new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Obsticles:");
@@ -237,8 +238,10 @@ namespace Tenta_Spel
                     i++;
                     new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "Gather Resources on planets to craft, and ");
                     i++;
-                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "replenish your Vitality (Fuel, Health, Ammunition)");
+                    new UIText(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * i), helpMenu.rendObj.size, Color.Gray, gamefont, "replenish Vitality (Fuel, Health, Ammunition)");
                     i++;
+
+                    new UIBlock(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * 2), helpMenu.rendObj.size + new Vector2(285, 20 * (i-3) +3), new Color(0, 0, 0, 30));
 
                 }
 

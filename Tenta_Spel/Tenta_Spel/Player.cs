@@ -46,7 +46,7 @@ namespace Tenta_Spel
             return false;
         }
 
-        public bool Loose()
+        public bool Lose()
         {
             if (goc.player.ship.hp <= 0)
             {
