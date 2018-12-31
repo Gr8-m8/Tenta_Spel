@@ -11,22 +11,13 @@
       <Time>2018-10-26T13:49:05.8061328+02:00</Time>
     </Item>
     <Item>
-      <Source>Sprites\ship1.png</Source>
-      <Name>Sprites\ship1</Name>
+      <Source>Sprites\Ship1.png</Source>
+      <Name>Sprites\Ship1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\ship1.xnb</Output>
+      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\Ship1.xnb</Output>
       <Time>2018-10-27T14:01:19.6142337+02:00</Time>
-    </Item>
-    <Item>
-      <Source>Sprites\bullet.png</Source>
-      <Name>Sprites\bullet</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\bullet.xnb</Output>
-      <Time>2018-10-28T13:43:15.3049714+01:00</Time>
     </Item>
     <Item>
       <Source>Sprites\Asteroid0.png</Source>
@@ -65,25 +56,6 @@
       <Time>2018-11-02T12:26:19.7646862+01:00</Time>
     </Item>
     <Item>
-      <Source>Sound\Mars.mp3</Source>
-      <Name>Sound\Mars</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sound\Mars.xnb</Output>
-      <Extra>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sound\Mars.wma</Extra>
-      <Time>2018-11-02T12:31:32.03238+01:00</Time>
-    </Item>
-    <Item>
-      <Source>Utskrift\GameFont.spritefont</Source>
-      <Name>Utskrift\GameFont</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Utskrift\GameFont.xnb</Output>
-      <Time>2018-11-09T11:51:50.2199812+01:00</Time>
-    </Item>
-    <Item>
       <Source>Sprites\Blank.png</Source>
       <Name>Sprites\Blank</Name>
       <Importer>TextureImporter</Importer>
@@ -109,6 +81,34 @@
       <Options>None</Options>
       <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\Mineral0.xnb</Output>
       <Time>2018-12-06T14:11:22.4364812+01:00</Time>
+    </Item>
+    <Item>
+      <Source>Sprites\Bullet.png</Source>
+      <Name>Sprites\Bullet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sprites\Bullet.xnb</Output>
+      <Time>2018-10-28T13:43:15.3049714+01:00</Time>
+    </Item>
+    <Item>
+      <Source>Sound\Mars.mp3</Source>
+      <Name>Sound\Mars</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sound\Mars.xnb</Output>
+      <Extra>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Sound\Mars.wma</Extra>
+      <Time>2018-11-02T12:31:32.03238+01:00</Time>
+    </Item>
+    <Item>
+      <Source>Utskrift\GameFont.spritefont</Source>
+      <Name>Utskrift\GameFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\17mali\source\repos\Tenta_Spel\Tenta_Spel\Tenta_Spel\bin\x86\Debug\Content\Utskrift\GameFont.xnb</Output>
+      <Time>2018-11-09T11:51:50.2199812+01:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>

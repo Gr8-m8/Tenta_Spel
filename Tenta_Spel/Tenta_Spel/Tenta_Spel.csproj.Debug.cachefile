@@ -1,13 +1,13 @@
 Content\Sprites\Ship0.xnb
-Content\Sprites\ship1.xnb
-Content\Sprites\bullet.xnb
+Content\Sprites\Ship1.xnb
 Content\Sprites\Asteroid0.xnb
 Content\Sprites\Planet0.xnb
 Content\Sprites\SpaceTerrorEye0.xnb
 Content\Sprites\SpaceTerrorTentacle0.xnb
-Content\Sound\Mars.xnb
-Content\Utskrift\GameFont.xnb
 Content\Sprites\Blank.xnb
 Content\Sprites\Explosion0.xnb
 Content\Sprites\Mineral0.xnb
+Content\Sprites\Bullet.xnb
+Content\Sound\Mars.xnb
+Content\Utskrift\GameFont.xnb
 Content\Sound\Mars.wma

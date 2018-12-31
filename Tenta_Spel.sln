@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenta_Spel", "Tenta_Spel\Tenta_Spel\Tenta_Spel.csproj", "{1E00571C-DEB5-4FD8-B722-B1433406DE99}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Tenta_SpelContent", "Tenta_Spel\Tenta_SpelContent\Tenta_SpelContent.contentproj", "{9CAC5D41-D7F7-4179-89FA-B13CD5487272}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenta_SpelContent", "Tenta_Spel\Tenta_SpelContent\Tenta_SpelContent.contentproj", "{9CAC5D41-D7F7-4179-89FA-B13CD5487272}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

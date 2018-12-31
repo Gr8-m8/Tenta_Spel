@@ -23,18 +23,9 @@ namespace Tenta_Spel
 
         public Vector2 cameraPos = new Vector2(25, 25);
 
-        public GameObjectController(GraphicsDevice graphicsDevice)
+        public GameObjectController(Dictionary<string, Texture2D> textureListSet)
         {
-            string imgPath = @"..\..\..\..\Tenta_SpelContent\Sprites\";
-            //Dictionary<string, Texture2D> textureListTemp = new Dictionary<string, Texture2D>();
-
-            for (int i = 0; i < System.IO.Directory.GetFiles(imgPath).Length; i++)
-            {
-                string tempPath = System.IO.Directory.GetFiles(imgPath)[i];
-                Texture2D tempTexture = Texture2D.FromStream(graphicsDevice, new System.IO.FileStream(tempPath, System.IO.FileMode.Open));
-                textureList.Add(System.IO.Directory.GetFiles(imgPath)[i].Substring(tempPath.LastIndexOf('\\') + 1).Split('.')[0], tempTexture);
-            }
-
+            textureList = textureListSet;
         }
 
         public void Activate()
@@ -44,7 +35,6 @@ namespace Tenta_Spel
 
             player = new Player(this);
 
-            //new Ship(this, "Ship1", new Vector2(0, 5));
             new Planet(this, "Planet0", new Vector2(0, 0));
         }
 
@@ -177,7 +167,7 @@ namespace Tenta_Spel
     class BackgroundManager
     {
         GameObjectController goc;
-        public Texture2D[] textures = new Texture2D[4];
+        public Texture2D texture;
 
         public Vector2[] pos = new Vector2[4];
         public Vector2 dim;
@@ -186,12 +176,9 @@ namespace Tenta_Spel
         public BackgroundManager(GameObjectController gocSet)
         {
             goc = gocSet;
-            for (int i = 0; i < textures.Length; i++)
-            {
-                textures[i] = goc.textureList["BG1"];
-            }
+            texture = goc.GetTexture("BG0");
 
-            dim = new Vector2(textures[0].Width, textures[0].Height);
+            dim = new Vector2(texture.Width, texture.Height);
         }
 
         public void Move()
@@ -215,7 +202,7 @@ namespace Tenta_Spel
         {
             for (int i = 0; i < 4; i++)
             {
-                spriteBatch.Draw(goc.textureList["BG1"], pos[i], null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
+                spriteBatch.Draw(texture, pos[i], null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
             }
         }
     }

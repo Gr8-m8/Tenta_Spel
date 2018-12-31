@@ -39,7 +39,21 @@ namespace Tenta_Spel
             spriteBatch = new SpriteBatch(GraphicsDevice);
             gamefont = Content.Load<SpriteFont>("Utskrift/GameFont");
 
-            goc = new GameObjectController(GraphicsDevice);
+            
+            Dictionary<string, Texture2D> textureList = new Dictionary<string, Texture2D>();
+            string[] loadTextures = System.IO.Directory.GetFiles("Content/Sprites/");
+            Console.WriteLine(loadTextures);
+
+            for (int i = 0; i < loadTextures.Length; i++)
+            {
+                Console.Write(loadTextures[i] + " | ");
+                string setter = loadTextures[i].Split(new char[1]{'/'})[2].Split(new char[1]{'.'})[0];
+                Console.WriteLine(setter);
+                textureList.Add(setter, Content.Load<Texture2D>("Sprites/" + setter));
+                
+            }
+            
+            goc = new GameObjectController(textureList);
             uim = new UIManager(goc);
 
             //WINDOWINPUTSCALE
@@ -62,6 +76,7 @@ namespace Tenta_Spel
             {
                 this.Exit();
             }
+            
             
             if (keyboardState.IsKeyDown(Keys.OemPlus))
             {
@@ -105,16 +120,17 @@ namespace Tenta_Spel
                     IsMouseVisible = true;
                 }
             }
-
+            
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
+            
             GraphicsDevice.Clear(Color.White);
             spriteBatch.Begin();
-
+            
             if (goc.gocActivate)
             {
                 for (int i = 0; i < 4; i++)
@@ -248,7 +264,6 @@ namespace Tenta_Spel
                 startmenu.Draw(spriteBatch, graphics);
                 helpMenu.Draw(spriteBatch, graphics);
             }
-            
 
             spriteBatch.End();
             base.Draw(gameTime);
