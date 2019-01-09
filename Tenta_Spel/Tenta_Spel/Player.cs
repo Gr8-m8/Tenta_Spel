@@ -21,7 +21,7 @@ namespace Tenta_Spel
         public Inventory inv = new Inventory();
 
         bool dead = false;
-        public static int winDistance = 100 * 7000;
+        public static int winDistance = 100 * 70;//00;
 
         public Player(GameObjectController gocSet)
         {
@@ -58,6 +58,12 @@ namespace Tenta_Spel
 
         public void Movement(KeyboardState keyboardState)
         {
+            if (keyboardState.IsKeyDown(Keys.OemComma))
+            {
+                ship.hp = 0;
+                ship.explode = ship.markForDelete = true;
+            }
+
             if (keyboardState.IsKeyDown(Keys.W))
             {
                 if (fuel > 0)
@@ -98,15 +104,6 @@ namespace Tenta_Spel
                 }
             }
             
-            //* Jesper Godmode
-            if (keyboardState.IsKeyDown(Keys.O))
-            {
-                ship.hp = 0;
-                ship.markForDelete = true;
-                ship.explode = true;
-            }
-            //*/
-
             if (keyboardState.IsKeyDown(Keys.F))
             {
                 if (inv.content.ContainsKey("Uranium"))

@@ -56,17 +56,18 @@ namespace Tenta_Spel
             {
                 new UIContainer(uimSet, new Vector2(0, 0), new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), new Color(Convert.ToInt32(colorChange), Convert.ToInt32(colorChange), Convert.ToInt32(colorChange), Convert.ToInt32(fade)), 0).Draw(spriteBatch, graphics);
 
-                if (fade <= 255)
-                {
-                    fade += 1f;
-                }
+                
 
                 if (player.Lose())
                 {
+                    if (fade <= 255)
+                    {
+                        fade += 2;
+                    }
 
                     if (fade >= 255)
                     {
-                        colorChange += 3f;
+                        colorChange += 6f;
                     }
 
                     if (colorChange >= 255)
@@ -77,6 +78,16 @@ namespace Tenta_Spel
 
                 if (player.Win())
                 {
+                    if (fade <= 255)
+                    {
+                        fade += 6;
+                    }
+
+                    if (colorChange <= 255)
+                    {
+                        colorChange += 5;
+                    }
+
                     if (fade >= 255)
                     {
                         DeActivate();
@@ -255,7 +266,7 @@ namespace Tenta_Spel
 
             for (int i = 0; i < 4; i++)
             {
-                spriteBatch.Draw(texture, pos[i], null, new Color(255, 255, 255, fade), 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
+                spriteBatch.Draw(texture, pos[i], null, new Color(255, 255, 255, Math.Max(0, 100 + fade)), 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
             }
         }
     }

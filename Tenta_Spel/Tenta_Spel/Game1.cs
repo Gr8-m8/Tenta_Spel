@@ -149,7 +149,7 @@ namespace Tenta_Spel
                     }
                 }
 
-                goc.DrawFade(spriteBatch, graphics, uim);
+                
             
             //UI
 
@@ -173,6 +173,7 @@ namespace Tenta_Spel
 
                 spriteBatch.DrawString(gamefont, (new Vector2(Convert.ToInt32(goc.player.ship.pos.X / 100), Convert.ToInt32(goc.player.ship.pos.Y / 100))).ToString(), new Vector2(2, 2), Color.Yellow);
 
+                goc.DrawFade(spriteBatch, graphics, uim);
             }
 
             if (!goc.gocActivate)
@@ -234,6 +235,8 @@ namespace Tenta_Spel
                     new UIBlock(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * 2), helpMenu.rendObj.size + new Vector2(285, 20 * (i-3) +3), new Color(0, 0, 0, 30));
 
                 }
+
+
 
                 startmenu.Draw(spriteBatch, graphics);
                 helpMenu.Draw(spriteBatch, graphics);
