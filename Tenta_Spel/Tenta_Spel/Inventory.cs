@@ -51,7 +51,6 @@ namespace Tenta_Spel
         }
 
 
-        //*
         public Item RemoveItem(Item itemRem)
         {
             if (content.ContainsKey(itemRem.name))
@@ -75,7 +74,6 @@ namespace Tenta_Spel
             ContentToList();
             return itemRem;
         }
-        //*/
 
         public int MoneyTransfer(int amount)
         {

@@ -36,13 +36,53 @@ namespace Tenta_Spel
             player = new Player(this);
 
             new Planet(this, "Planet0", new Vector2(0, 0));
+
+            fade = 0;
+            colorChange = 0;
         }
 
         public void DeActivate()
         {
             gocActivate = false;
             gos = new List<GameObject>();
+        }
 
+        float fade = 0;
+        float colorChange = 0;
+
+        public void DrawFade(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, UIManager uimSet)
+        {
+            if (player.Win() || player.Lose())
+            {
+                new UIContainer(uimSet, new Vector2(0, 0), new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), new Color(Convert.ToInt32(colorChange), Convert.ToInt32(colorChange), Convert.ToInt32(colorChange), Convert.ToInt32(fade)), 0).Draw(spriteBatch, graphics);
+
+                if (fade <= 255)
+                {
+                    fade += 1f;
+                }
+
+                if (player.Lose())
+                {
+
+                    if (fade >= 255)
+                    {
+                        colorChange += 3f;
+                    }
+
+                    if (colorChange >= 255)
+                    {
+                        DeActivate();
+                    }
+                }
+
+                if (player.Win())
+                {
+                    if (fade >= 255)
+                    {
+                        DeActivate();
+                    }
+                }
+            }
         }
 
         public Texture2D GetTexture(string skey)
@@ -200,9 +240,22 @@ namespace Tenta_Spel
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            Vector2 winPos = goc.player.ship.pos;
+            if (winPos.X < 0) { winPos.X *= -1; }
+            if (winPos.Y < 0) { winPos.Y *= -1; }
+
+            int fade = 255;
+            int fadeDist = 100 * 10;
+            int playerGoalDist = Player.winDistance - Convert.ToInt32(Math.Max(winPos.X, winPos.Y));
+
+            if (playerGoalDist < fadeDist)
+            {
+                fade = (int)(255f * (float)playerGoalDist / fadeDist);
+            }
+
             for (int i = 0; i < 4; i++)
             {
-                spriteBatch.Draw(texture, pos[i], null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
+                spriteBatch.Draw(texture, pos[i], null, new Color(255, 255, 255, fade), 0, Vector2.Zero, 1f, SpriteEffects.None, 1);
             }
         }
     }

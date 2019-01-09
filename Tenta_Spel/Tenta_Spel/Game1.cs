@@ -90,16 +90,18 @@ namespace Tenta_Spel
                 wm.WindowScale(GraphicsDevice);
             }
 
-            if (keyboardState.IsKeyDown(Keys.Enter))
+            //UPDATE
+
+            if (!goc.gocActivate)
             {
-                if (!goc.gocActivate)
+                IsMouseVisible = true;
+                if (keyboardState.IsKeyDown(Keys.Enter))
                 {
                     goc.Activate();
                     IsMouseVisible = false;
                 }
+                
             }
-
-            //UPDATE
 
             if (goc.gocActivate)
             {
@@ -109,15 +111,16 @@ namespace Tenta_Spel
                 if (goc.player.Win() || goc.player.Lose())
                 {
                     if (goc.player.Win())
+                    {
                         menuMessage = "YOU WON!";
+                    }
 
                     if (goc.player.Lose())
                     {
                         menuMessage = "YOU LOSE!";
                     }
 
-                    goc.DeActivate();
-                    IsMouseVisible = true;
+                    //goc.DeActivate();
                 }
             }
             
@@ -133,50 +136,23 @@ namespace Tenta_Spel
             
             if (goc.gocActivate)
             {
-                for (int i = 0; i < 4; i++)
-                {
-                    goc.bm.Draw(spriteBatch);
-                }
+                goc.bm.Draw(spriteBatch);
 
-                for (int i = 6; i > 0; i--)
+                for (int r = 6; r > 0; r--)
                 {
                     foreach (GameObject go in goc.gos)
                     {
-                        if (Math.Floor((double)go.rendLayer) == i)
+                        if (Math.Floor((double)go.rendLayer) == r)
                         {
                             go.Draw(spriteBatch, graphics);
                         }
                     }
                 }
 
-                Vector2 winPos = goc.player.ship.pos;
-                if (winPos.X < 0)
-                {
-                    winPos.X *= -1;
-                }
-
-                if (winPos.Y < 0)
-                {
-                    winPos.Y *= -1;
-                }
-
-                int fade = 0;
-                int fadeDist = 100 * 10;
-                int playerGoalDist = Player.winDistance - Convert.ToInt32(Math.Max(winPos.X, winPos.Y));
-
-                if (playerGoalDist < fadeDist)
-                {
-                    fade = 255 - (int)(255f * (float)playerGoalDist / fadeDist);                    
-                }
-                Console.WriteLine();
-
-                new UIContainer(uim, new Vector2(0, 0), new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), new Color(fade, fade, fade, fade), 5).Draw(spriteBatch, graphics);
-            }
-
+                goc.DrawFade(spriteBatch, graphics, uim);
+            
             //UI
 
-            if (goc.gocActivate)
-            {
                 goc.player.inv.Draw(spriteBatch, graphics, gamefont);
 
                 UIContainer statusbar = new UIContainer(uim, new Vector2(0, graphics.PreferredBackBufferHeight - 30), new Vector2(graphics.PreferredBackBufferWidth, 30), Color.Gray, 2);
@@ -201,12 +177,10 @@ namespace Tenta_Spel
 
             if (!goc.gocActivate)
             {
-                
                 UIContainer startmenu = new UIContainer(uim, new Vector2(400, 200), new Vector2(graphics.PreferredBackBufferWidth - 400*2, graphics.PreferredBackBufferHeight - 400), Color.Gray, 5);
                 UIButton startButton = new UIButton(startmenu, new Vector2(500, 450), new Vector2(graphics.PreferredBackBufferWidth - 800 -200, graphics.PreferredBackBufferHeight - 600-100), Color.DarkSlateBlue);
                 UIText startText = new UIText(startmenu, startButton.pos + new Vector2(startButton.size.X/2, startButton.size.Y/3), startButton.size, new Color(-startButton.clr.R, -startButton.clr.G, -startButton.clr.B), gamefont, "START");
                 
-
                 UIText titleText = new UIText(startmenu, startText.pos + new Vector2(0, -200), startButton.size, Color.Red, gamefont, menuMessage);
                 titleText.pos.X -= (titleText.text.Length)*9/1.5f;
                 startText.pos.X -= (startText.text.Length-1)*9;
