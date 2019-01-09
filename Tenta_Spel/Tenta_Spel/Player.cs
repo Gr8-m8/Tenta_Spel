@@ -21,7 +21,7 @@ namespace Tenta_Spel
         public Inventory inv = new Inventory();
 
         bool dead = false;
-        public static int winDistance = 100 * 7000;
+        public static int winDistance = 100 * 5000;
 
         public Player(GameObjectController gocSet)
         {
@@ -30,6 +30,7 @@ namespace Tenta_Spel
             ship.rendLayer = 1;
         }
 
+        //updatering
         public void Update(KeyboardState keyboardState)
         {
             Movement(keyboardState);
@@ -37,6 +38,7 @@ namespace Tenta_Spel
             ship.tickShootCooldown = Math.Min(ship.tickShootCooldown + 1, goc.player.ship.shootCooldown);
         }
 
+        //funktion som retunerar om man vunnit
         public bool Win()
         {
             if (ship.pos.X > winDistance || ship.pos.Y > winDistance || ship.pos.X < -winDistance || ship.pos.Y < -winDistance)
@@ -46,6 +48,7 @@ namespace Tenta_Spel
             return false;
         }
 
+        //funktion som retunerar om man förlorat
         public bool Lose()
         {
             if (goc.player.ship.hp <= 0)
@@ -56,14 +59,10 @@ namespace Tenta_Spel
             return false;
         }
 
+        //spelarens keyboard input för funktionalitet, (rörelse, resursskapande)
         public void Movement(KeyboardState keyboardState)
         {
-            if (keyboardState.IsKeyDown(Keys.OemComma))
-            {
-                ship.hp = 0;
-                ship.explode = ship.markForDelete = true;
-            }
-
+            //framåt
             if (keyboardState.IsKeyDown(Keys.W))
             {
                 if (fuel > 0)
@@ -73,21 +72,25 @@ namespace Tenta_Spel
                 }
             }
 
+            //rotera höger
             if (keyboardState.IsKeyDown(Keys.D))
             {
                 ship.rotation += 0.1f;
             }
 
+            //rotera vänster
             if (keyboardState.IsKeyDown(Keys.A))
             {
                 ship.rotation -= 0.1f;
             }
 
+            //skjuta
             if (keyboardState.IsKeyDown(Keys.Space) || keyboardState.IsKeyDown(Keys.K))
             {
                ship.Shoot(goc, 10, 1);
             }
 
+            //skapa amunition
             if (keyboardState.IsKeyDown(Keys.R))
             {
                 if (inv.content.ContainsKey("Iron"))
@@ -104,6 +107,7 @@ namespace Tenta_Spel
                 }
             }
             
+            //skapa bränsle
             if (keyboardState.IsKeyDown(Keys.F))
             {
                 if (inv.content.ContainsKey("Uranium"))
@@ -120,6 +124,7 @@ namespace Tenta_Spel
                 }
             }
 
+            //skapa hälsa
             if (keyboardState.IsKeyDown(Keys.J))
             {
                 if (inv.content.ContainsKey("Titanium"))
@@ -136,6 +141,7 @@ namespace Tenta_Spel
                 }
             }
 
+            //skapa mineral
             if (keyboardState.IsKeyDown(Keys.L))
             {
                 if (inv.content.ContainsKey("Mineral Stone"))
@@ -149,14 +155,13 @@ namespace Tenta_Spel
             }
         }
 
+        //funktion för att rita spelaren
         public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             if (!dead)
             {
                 spriteBatch.Draw(goc.player.ship.sprite, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, goc.player.ship.rotation, goc.player.ship.Raduis(), 1f, SpriteEffects.None, 0);
             }
-
-            
         }
     }
 }

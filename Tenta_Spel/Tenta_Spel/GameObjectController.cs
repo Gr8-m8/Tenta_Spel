@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Tenta_Spel
 {
+    //classen för att kontrollera alla objekt
     class GameObjectController
     {
         public bool gocActivate = false;
@@ -28,6 +29,7 @@ namespace Tenta_Spel
             textureList = textureListSet;
         }
 
+        //aktiverar speldelen av spelet
         public void Activate()
         {
             gocActivate = true;
@@ -41,22 +43,21 @@ namespace Tenta_Spel
             colorChange = 0;
         }
 
+        //avaktioverar speldelen av spelet och aktiverar huvudmeny
         public void DeActivate()
         {
             gocActivate = false;
             gos = new List<GameObject>();
         }
 
+        //Animation för att vinna eller förlora
         float fade = 0;
         float colorChange = 0;
-
         public void DrawFade(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, UIManager uimSet)
         {
             if (player.Win() || player.Lose())
             {
                 new UIContainer(uimSet, new Vector2(0, 0), new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), new Color(Convert.ToInt32(colorChange), Convert.ToInt32(colorChange), Convert.ToInt32(colorChange), Convert.ToInt32(fade)), 0).Draw(spriteBatch, graphics);
-
-                
 
                 if (player.Lose())
                 {
@@ -96,6 +97,8 @@ namespace Tenta_Spel
             }
         }
 
+        //funktion för att retunera en exsisterande textur från de som finns.
+        //Retunerar "Blank" textur om nyckeln för texturen inte finns
         public Texture2D GetTexture(string skey)
         {
             if (textureList.ContainsKey(skey))
@@ -108,6 +111,7 @@ namespace Tenta_Spel
             }
         }
 
+        //sköter updatering av objekt (fysik och rörelse)
         public void Update(GraphicsDeviceManager graphics)
         {
             bm.Move();
@@ -124,6 +128,7 @@ namespace Tenta_Spel
                 }
             }
 
+            //raderar oanvända objekt
             while (markedForDelete.Count > 0)
             {
                 GameObject last = markedForDelete.Last();
@@ -140,6 +145,7 @@ namespace Tenta_Spel
             SpawnerPlanet(graphics);
         }
 
+        //skapar kometer
         public void SpawnerComet(GraphicsDeviceManager graphics)
         {
             Random r = new Random();
@@ -171,6 +177,7 @@ namespace Tenta_Spel
             }
         }
 
+        //skapar planeter
         public int SpawnerPlanet(GraphicsDeviceManager graphics)
         {
             Random r = new Random();
@@ -199,22 +206,7 @@ namespace Tenta_Spel
         }
     }
 
-    class Camera
-    {
-        public Vector2 pos;
-        float zoom;
-
-        public void PosSet(Vector2 posSet)
-        {
-            pos = posSet;
-        }
-
-        public void Move(Vector2 moveBy)
-        {
-            pos += moveBy;
-        }
-    }
-
+    //klass för att hantera bakgrund
     class BackgroundManager
     {
         GameObjectController goc;
@@ -232,9 +224,9 @@ namespace Tenta_Spel
             dim = new Vector2(texture.Width, texture.Height);
         }
 
+        //flyttar bakgrunden så den loopar oändligt för spelaren
         public void Move()
         {
-
             pos[0] = goc.player.ship.pos * -speed;
             pos[0].X %= dim.X;
             pos[0].X -= dim.X;
@@ -249,6 +241,7 @@ namespace Tenta_Spel
             pos[3] = pos[0] + new Vector2(dim.X, dim.Y);
         }
 
+        //funktion för att rita bakgrunden
         public void Draw(SpriteBatch spriteBatch)
         {
             Vector2 winPos = goc.player.ship.pos;

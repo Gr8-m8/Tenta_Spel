@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Tenta_Spel
 {
+    //klassen för föråd
     class Inventory
     {
         int slots = 10;
@@ -18,6 +19,7 @@ namespace Tenta_Spel
         public Dictionary<string, Item> content = new Dictionary<string, Item>();
         public Item[] contentList;
 
+        //lägga till saker till föråd
         public Item AddItem(Item itemAdd)
         {
             if (itemAdd != null)
@@ -50,7 +52,7 @@ namespace Tenta_Spel
             return ItemZero();
         }
 
-
+        //tar bort saker från föråd
         public Item RemoveItem(Item itemRem)
         {
             if (content.ContainsKey(itemRem.name))
@@ -75,6 +77,8 @@ namespace Tenta_Spel
             return itemRem;
         }
 
+        //pengarhantering
+        /* pengar används inte (ännu ;) )
         public int MoneyTransfer(int amount)
         {
             if (money + amount >= 0)
@@ -89,7 +93,9 @@ namespace Tenta_Spel
 
             return 0;
         }
+        //*/
 
+        //skapar en lista av allt som finns i förådet
         void ContentToList()
         {
             contentList = new Item[content.Count];
@@ -101,15 +107,15 @@ namespace Tenta_Spel
             }
         }
 
+        //retunerar debug- och errorföremål
         Item ItemZero()
         {
             return new Item("0", 0);
         }
 
+        //funktion för att rita förrådet och hur man skapar föremål
         public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, SpriteFont gamefont)
         {
-
-            //Rec
             int i = 0;
             spriteBatch.DrawString(gamefont, "[F] +Fuel (Uranium {1}, Aluminium {2})", new Vector2(0, 2 * 18 + 18 * i), Color.Beige);
             i++;
@@ -133,9 +139,9 @@ namespace Tenta_Spel
         }
     }
 
+    //grundklassen för förådsaker
     class Item
     {
-
         public string name;
         public int quantity;
 
@@ -146,6 +152,7 @@ namespace Tenta_Spel
         }
     }
 
+    //klassen för mineraler
     class Mineral : Item
     {
         static Random r = new Random();

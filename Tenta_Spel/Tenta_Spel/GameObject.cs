@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Tenta_Spel
 {
+    //Grundklass för alla spelobjekt
     class GameObject
     {
         public GameObjectController goc;
@@ -46,6 +47,7 @@ namespace Tenta_Spel
             goc.gos.Add(this);
         }
 
+        //Lista för all objektens kollisionsobjekt
         public List<GameObject> CollisionObjects()
         {
             List<GameObject> collObj = new List<GameObject>();
@@ -62,12 +64,14 @@ namespace Tenta_Spel
             return collObj;
         }
 
+        //virtuell funktion för att rita objektet
         public virtual void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
 
             spriteBatch.Draw(sprite, pos - goc.player.ship.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), 1f, SpriteEffects.None, 1);
         }
 
+        //virtuel funktion hur objekten hanterar kollisioner mellan olika Typer av spelobjekt
         public virtual void Collision()
         {
             foreach (GameObject go in CollisionObjects())
@@ -79,37 +83,44 @@ namespace Tenta_Spel
             }
         }
 
+        //retunerar radien av objektet
         public virtual Vector2 Raduis()
         {
             return new Vector2(sprite.Width / 2, sprite.Height / 2);
         }
 
+        //retunerar relativa framåt för spelobjektet
         public Vector2 Forward()
         {
             return new Vector2((float)-Math.Sin(rotation), (float)Math.Cos(rotation));
         }
 
+        //flytta objektet till position
         public void Move(Vector2 moveTo)
         {
             pos = moveTo;
         }
 
+        //flytta objektet med kraft
         public virtual void ForceMove()
         {
             velocity *= friction;
             pos += velocity;
         }
 
+        //sätta kraft på objektet
         public void ForceAdd(Vector2 dir, float acc)
         {
             velocity += dir * acc * fullThrust;
         }
 
+        //definerar objektets typ för sig själv
         public void Create()
         {
             T = this.GetType();
         }
 
+        //tar bort objektet från aktiva objekt i listan i klassen som hanterar spelobjekt
         public void Delete()
         {
             if (goc.gos.Contains(this))
@@ -118,6 +129,7 @@ namespace Tenta_Spel
             }
         }
 
+        //updatera spelobjekltet (fysik)
         public void Update()
         {
             ForceMove();
@@ -125,6 +137,7 @@ namespace Tenta_Spel
         }
     }
 
+    //klassen för skepp
     class Ship : GameObject
     {
         List<Bullet> bullets = new List<Bullet>();
@@ -134,10 +147,10 @@ namespace Tenta_Spel
             rendLayer = 4;
         }
 
+        //skjuta
         public int bulletCount = 100;
         public int shootCooldown = 20;
         public int tickShootCooldown = 0;
-
         public void Shoot(GameObjectController goc, float speed, int dmg)
         {
             if (hp > 0)
@@ -156,6 +169,7 @@ namespace Tenta_Spel
             }
         }
 
+        //kollisionshantering
         public override void Collision()
         {
             foreach (GameObject go in CollisionObjects())
@@ -179,10 +193,10 @@ namespace Tenta_Spel
             }
         }
 
+        //hantering av skäppets hälsa, liksom att det dör vid 0 hp
         public int hp = 100;
         public void HeathManager(int amount)
         {
-            Console.WriteLine(hp + " | " + amount);
             hp -= amount;
 
             if (hp < 1)
@@ -196,13 +210,9 @@ namespace Tenta_Spel
                 }
             }
         }
-
-        public void Beam()
-        {
-
-        }
     }
 
+    //klassen för skott
     class Bullet : GameObject
     {
         int tickAge = 0;
@@ -221,13 +231,14 @@ namespace Tenta_Spel
             Create();
         }
 
+        //lägger kraft på objektet så att den får konstant rörelse
         public override void ForceMove()
         {
-
             pos += velocity;
 
             float range = (float)Math.Sqrt((pos.X - goc.player.ship.pos.X) * (pos.X - goc.player.ship.pos.X) + (pos.Y - goc.player.ship.pos.Y) * (pos.Y - goc.player.ship.pos.Y));
             int maxRange = 2000;
+            //markerar objektet för radering om det är utanför skärmen tillräckligt lång tid, (objektet blir orellevant)
             if (range > maxRange || range < -maxRange)
             {
                 tickAge += 1;
@@ -241,6 +252,7 @@ namespace Tenta_Spel
             }
         }
 
+        //kollisionshantering
         public override void Collision()
         {
             //base.Collision();
@@ -272,6 +284,7 @@ namespace Tenta_Spel
         }
     }
 
+    //klassen för planeter
     class Planet : GameObject
     {
         public Color planetColor;
@@ -283,9 +296,12 @@ namespace Tenta_Spel
         public Planet(GameObjectController gocSet, string spriteKeySet, Vector2 startPos) : base(gocSet, spriteKeySet, startPos)
         {
             rendLayer = 4;
+            //slumpar färg
             planetColor = new Color(r.Next(255), r.Next(255), r.Next(255));
+            //slumpar skala
             scale = 1 + float.Parse((r.NextDouble() * 5).ToString());
 
+            //slumpar mineraler på planeten
             int minerals = r.Next(3, 8);
             for (int i = 0; i < minerals; i++)
             {
@@ -295,18 +311,20 @@ namespace Tenta_Spel
             }
         }
 
+        //roterar planeten
         public override void ForceMove()
         {
             rotation += 0.0002f;
-            //rotation += rotationSpeed;
         }
 
+        //funktion för att rita planeten
         public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             spriteBatch.Draw(sprite, pos - goc.player.ship.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, planetColor, rotation, Raduis(), scale, SpriteEffects.None, 1);
         }
     }
 
+    //klassen för explosioner
     class Explosion : GameObject
     {
         float lifespanMax = 5;
@@ -322,6 +340,7 @@ namespace Tenta_Spel
             radius = (radiusSet/Raduis().X) * 1.25f;
         }
 
+        //animation för explosionen
         float Scale(float x)
         {
             float t = 0.1f;
@@ -332,6 +351,7 @@ namespace Tenta_Spel
             x = Math.Max(0, x);
             float y = Math.Max(0, -t*(x * x) + 2 * k * x + 1);
 
+            //raderar explosionen när den blir orelevant (så liten att den inte syns)
             if(y <= 0)
             {
                 markForDelete = true;
@@ -340,6 +360,7 @@ namespace Tenta_Spel
             return y * radius;
         }
 
+        //kollisionshantering
         public override void Collision()
         {
             //base.Collision();
@@ -354,14 +375,19 @@ namespace Tenta_Spel
             }
         }
 
+        //funktion för att rita objektet
         public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
+            //variabler för att animera explosionen
             lifespan += 0.1f;
             rotation += r.Next(-2, 3) * 0.05f;
+
             spriteBatch.Draw(sprite, pos - goc.player.ship.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.White, rotation, Raduis(), Scale(lifespan), SpriteEffects.None, 1);
         }
     }
 
+    //grundklassen för saker som ska kunna finnas i ett inventory, fast är i världen
+    //Detta fall bara mineraler på planeter
     class WorldItem : GameObject
     {
         Item itm = new Item("", 3);
@@ -372,6 +398,7 @@ namespace Tenta_Spel
             
         }
 
+        //kollisionshantering
         public override void Collision()
         {
             foreach (GameObject go in CollisionObjects())
@@ -387,6 +414,7 @@ namespace Tenta_Spel
             }
         }
 
+        //funktion för att rita objektet
         public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             spriteBatch.Draw(sprite, pos - goc.player.ship.pos + new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2), null, Color.Gold, rotation, Raduis(), 1f, SpriteEffects.None, 1);

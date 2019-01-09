@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Tenta_Spel
 {
+    //klassen för att hantera ui element
     class UIManager
     {
         public List<UIContainer> uiCs = new List<UIContainer>();
@@ -21,11 +22,10 @@ namespace Tenta_Spel
         {
             goc = gocSet;
             block = goc.GetTexture("");
-
-            /*UI*/
         }
     }
 
+    //klassen för att hantera underårdnade uielement
     class UIContainer
     {
         public UIManager uim;
@@ -46,21 +46,13 @@ namespace Tenta_Spel
             
         }
 
-        public int GridX()
-        {
-            return Convert.ToInt32(rendObj.size.X / 10) + borderSize;
-        }
-
-        public int GridY()
-        {
-            return Convert.ToInt32(rendObj.size.Y / 10) + borderSize;
-        }
-
+        //retunerar bakgrundsuiobjektets rect (position och dimensioner)
         public Rectangle dims()
         {
             return new Rectangle(Convert.ToInt32(rendObj.pos.X), Convert.ToInt32(rendObj.pos.Y), Convert.ToInt32(rendObj.size.X), Convert.ToInt32(rendObj.size.Y));
         }
 
+        //funktion för att rita underordnade uiobjekt
         public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             rendObj.Draw(spriteBatch, graphics);
@@ -71,6 +63,7 @@ namespace Tenta_Spel
         }
     }
 
+    //grundklassen för uiobjekt
     class UIElement
     {
         public Type T;
@@ -97,19 +90,20 @@ namespace Tenta_Spel
             texture = uic.uim.block;
         }
 
+        //retunerar rect
         Rectangle Rect()
         {
             return new Rectangle(Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y), Convert.ToInt32(size.X), Convert.ToInt32(size.Y));
         }
 
+        //funktion för att rita uiobjekt
         public virtual void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             spriteBatch.Draw(texture, Rect(), clr);
         }
     }
 
-    
-
+    //klass för att rita enkla uiobjekt (samma som UIElement klassen)
     class UIBlock : UIElement
     {
         public UIBlock(UIContainer uic, Vector2 posSet, Vector2 sizeSet, Color colorSet) : base(uic, posSet, sizeSet, colorSet)
@@ -118,6 +112,7 @@ namespace Tenta_Spel
         }
     }
 
+    //klassen för ui text
     class UIText : UIElement
     {
         SpriteFont font;
@@ -129,12 +124,14 @@ namespace Tenta_Spel
             font = spritefont;
         }
 
+        //funktion för att rita objektet
         public override void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
         {
             spriteBatch.DrawString(font, text, pos, clr);
         }
     }
 
+    //klassen för ui knappar
     class UIButton : UIElement
     {
         Color baseColor;
@@ -149,6 +146,7 @@ namespace Tenta_Spel
 
         }
 
+        //funktion som retunerar om knappen blivit tryckt
         public bool ButtonPressed()
         {
             MouseState ms = Mouse.GetState();

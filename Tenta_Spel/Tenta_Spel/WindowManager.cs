@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Tenta_Spel
 {
+    //klassen för att hantera probramfönstret
     class WindowManager
     {
         GraphicsDeviceManager graphics;
@@ -21,6 +22,7 @@ namespace Tenta_Spel
             graphics = graphicsSet;
         }
 
+        //om programfönstret är 100% av skärmen blir det fullskärm
         public void WindowScale(GraphicsDevice graphicsDevice)
         {
             graphics.PreferredBackBufferWidth = Convert.ToInt32(graphicsDevice.DisplayMode.Width * windowScale);
@@ -36,12 +38,14 @@ namespace Tenta_Spel
             graphics.ApplyChanges();
         }
 
+        //skalar programfönstret relativt
         public void WindowScaleScale(float amount)
         {
             windowScale = Math.Min(1, Math.Max(0.3f, windowScale + amount));
 
         }
 
+        //sätter programfönstrets storlek
         public void WindowScaleSet(float amount)
         {
             windowScale = Math.Min(1, Math.Max(0.3f, amount));

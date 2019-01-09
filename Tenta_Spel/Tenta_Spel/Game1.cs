@@ -13,6 +13,7 @@ namespace Tenta_Spel
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        //Grundvariabler
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteFont gamefont;
@@ -35,6 +36,8 @@ namespace Tenta_Spel
         }
         protected override void LoadContent()
         {
+            //initciering
+
             wm = new WindowManager(graphics);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             gamefont = Content.Load<SpriteFont>("Utskrift/GameFont");
@@ -46,9 +49,9 @@ namespace Tenta_Spel
 
             for (int i = 0; i < loadTextures.Length; i++)
             {
-                Console.Write(loadTextures[i] + " | ");
+                //Console.Write(loadTextures[i] + " | ");
                 string setter = loadTextures[i].Split(new char[1]{'/'})[2].Split(new char[1]{'.'})[0];
-                Console.WriteLine(setter);
+                //Console.WriteLine(setter);
                 textureList.Add(setter, Content.Load<Texture2D>("Sprites/" + setter));
                 
             }
@@ -56,17 +59,13 @@ namespace Tenta_Spel
             goc = new GameObjectController(textureList);
             uim = new UIManager(goc);
 
-            //WINDOWINPUTSCALE
             wm.WindowScaleSet(1f);
             wm.WindowScale(GraphicsDevice);
-
-            //MediaPlayer.Play(Content.Load<Song>("Sound/Mars"));
 
             IsMouseVisible = true;
         }
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
         }
 
         protected override void Update(GameTime gameTime)
@@ -77,7 +76,8 @@ namespace Tenta_Spel
                 this.Exit();
             }
             
-            
+            //För att skala spelfönstret, fungerar inte bra med huvudmenyn
+            /* Fungerar bara bra vid debug
             if (keyboardState.IsKeyDown(Keys.OemPlus))
             {
                 wm.WindowScaleScale(0.1f);
@@ -89,20 +89,25 @@ namespace Tenta_Spel
                 wm.WindowScaleScale(-0.1f);
                 wm.WindowScale(GraphicsDevice);
             }
-
+            //*/
+            
             //UPDATE
 
+            //Om spelet inte är startat, Update
             if (!goc.gocActivate)
             {
                 IsMouseVisible = true;
                 if (keyboardState.IsKeyDown(Keys.Enter))
                 {
+                    //startar speldelen av spelet
                     goc.Activate();
+
                     IsMouseVisible = false;
                 }
                 
             }
 
+            //Om spelet är startat, Update
             if (goc.gocActivate)
             {
                 goc.Update(graphics);
@@ -119,8 +124,6 @@ namespace Tenta_Spel
                     {
                         menuMessage = "YOU LOSE!";
                     }
-
-                    //goc.DeActivate();
                 }
             }
             
@@ -134,10 +137,13 @@ namespace Tenta_Spel
             GraphicsDevice.Clear(Color.White);
             spriteBatch.Begin();
             
+            //grafik för om speldelen av spelet är startat
             if (goc.gocActivate)
             {
+                //bakgrund
                 goc.bm.Draw(spriteBatch);
 
+                //loopar igenom alla objekt efter deras renderlayer vilket gör att de ritas på varandra i rätt ordning, ex. planeter ritas bakom skepp och kometer
                 for (int r = 6; r > 0; r--)
                 {
                     foreach (GameObject go in goc.gos)
@@ -151,10 +157,12 @@ namespace Tenta_Spel
 
                 
             
-            //UI
+                //UI
 
+                //rita spelarens föråd
                 goc.player.inv.Draw(spriteBatch, graphics, gamefont);
 
+                //ui för hälsa och värden
                 UIContainer statusbar = new UIContainer(uim, new Vector2(0, graphics.PreferredBackBufferHeight - 30), new Vector2(graphics.PreferredBackBufferWidth, 30), Color.Gray, 2);
                 int i = 0;
                 new UIBlock(statusbar, statusbar.rendObj.pos + new Vector2(5*(i+1) + 200*i, 5), new Vector2(200, 20), Color.Red);
@@ -173,11 +181,14 @@ namespace Tenta_Spel
 
                 spriteBatch.DrawString(gamefont, (new Vector2(Convert.ToInt32(goc.player.ship.pos.X / 100), Convert.ToInt32(goc.player.ship.pos.Y / 100))).ToString(), new Vector2(2, 2), Color.Yellow);
 
+                //Animation för att gå i måll eller förlora
                 goc.DrawFade(spriteBatch, graphics, uim);
             }
 
+            //grafik för om huvudmenyn visas
             if (!goc.gocActivate)
             {
+                //ui för huvudmenyn
                 UIContainer startmenu = new UIContainer(uim, new Vector2(400, 200), new Vector2(graphics.PreferredBackBufferWidth - 400*2, graphics.PreferredBackBufferHeight - 400), Color.Gray, 5);
                 UIButton startButton = new UIButton(startmenu, new Vector2(500, 450), new Vector2(graphics.PreferredBackBufferWidth - 800 -200, graphics.PreferredBackBufferHeight - 600-100), Color.DarkSlateBlue);
                 UIText startText = new UIText(startmenu, startButton.pos + new Vector2(startButton.size.X/2, startButton.size.Y/3), startButton.size, new Color(-startButton.clr.R, -startButton.clr.G, -startButton.clr.B), gamefont, "START");
@@ -186,16 +197,18 @@ namespace Tenta_Spel
                 titleText.pos.X -= (titleText.text.Length)*9/1.5f;
                 startText.pos.X -= (startText.text.Length-1)*9;
 
+                //starta spelet om startknappen är tryckt
                 if (startButton.ButtonPressed())
                 {
                     goc.Activate();
                     IsMouseVisible = false;
                 }
 
+                //ui för hjälpmenyn
                 UIContainer helpMenu = new UIContainer(uim, new Vector2(10, 20*8), new Vector2(100, 25), new Color(0, 0, 0, 20), 2);
-                //new UIBlock(helpMenu)
                 new UIText(helpMenu, helpMenu.rendObj.pos, helpMenu.rendObj.size, Color.Gray, gamefont, "[H] Help");
 
+                //visas bara om man tryckt på H knappen för att få hjälp
                 if (Keyboard.GetState().IsKeyDown(Keys.H))
                 {
                     int i = 2;
@@ -235,8 +248,6 @@ namespace Tenta_Spel
                     new UIBlock(helpMenu, helpMenu.rendObj.pos + new Vector2(0, 20 * 2), helpMenu.rendObj.size + new Vector2(285, 20 * (i-3) +3), new Color(0, 0, 0, 30));
 
                 }
-
-
 
                 startmenu.Draw(spriteBatch, graphics);
                 helpMenu.Draw(spriteBatch, graphics);
