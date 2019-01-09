@@ -21,7 +21,7 @@ namespace Tenta_Spel
         public Inventory inv = new Inventory();
 
         bool dead = false;
-        public static int winDistance = 100 * 70;//00;
+        public static int winDistance = 100 * 7000;
 
         public Player(GameObjectController gocSet)
         {
@@ -114,7 +114,7 @@ namespace Tenta_Spel
                         {
                             inv.RemoveItem(new Item("Uranium", 1));
                             inv.RemoveItem(new Item("Aluminium", 2));
-                            fuel = Math.Min(5000, fuel + 1000);
+                            fuel = Math.Min(7000, fuel + 1000);
                         }
                     }
                 }
